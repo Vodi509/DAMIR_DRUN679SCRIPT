@@ -23,27 +23,27 @@ return {
         lb.TextSize = 12
         lb.BorderSizePixel = 0
         Instance.new("UICorner", lb).CornerRadius = UDim.new(0,4)
+        Instance.new("UIStroke", lb).Thickness = 1.5
+        Instance.new("UIStroke", lb).Color = Color3.fromRGB(0,0,0)
         
         lb.MouseButton1Click:Connect(function()
-            if lang == "RU" then
-                lang = "EN"
-                lb.Text = "EN → RU"
-                lt.Text = "🌐 Language: English"
-            else
-                lang = "RU"
-                lb.Text = "RU → EN"
-                lt.Text = "🌐 Язык: Русский"
-            end
+            if lang == "RU" then lang = "EN" lb.Text = "EN → RU" lt.Text = "🌐 Language: English"
+            else lang = "RU" lb.Text = "RU → EN" lt.Text = "🌐 Язык: Русский" end
         end)
         
         local themes = {
-            {name = "Неон", bg = Color3.fromRGB(10,10,20)},
-            {name = "Закат", bg = Color3.fromRGB(25,10,10)},
-            {name = "Фиолет", bg = Color3.fromRGB(15,5,25)},
-            {name = "Океан", bg = Color3.fromRGB(5,15,25)},
-            {name = "Лес", bg = Color3.fromRGB(5,20,10)},
-            {name = "Золото", bg = Color3.fromRGB(20,18,5)},
-            {name = "Космос", bg = Color3.fromRGB(5,5,15)}
+            {name = "Неон", main = Color3.fromRGB(10,10,20), side = Color3.fromRGB(15,15,28), trans = 0.85},
+            {name = "Закат", main = Color3.fromRGB(30,10,5), side = Color3.fromRGB(35,15,10), trans = 0.8},
+            {name = "Фиолет", main = Color3.fromRGB(20,5,35), side = Color3.fromRGB(28,10,42), trans = 0.75},
+            {name = "Океан", main = Color3.fromRGB(5,20,35), side = Color3.fromRGB(10,28,42), trans = 0.8},
+            {name = "Лес", main = Color3.fromRGB(5,30,10), side = Color3.fromRGB(10,35,15), trans = 0.75},
+            {name = "Золото", main = Color3.fromRGB(30,25,5), side = Color3.fromRGB(35,30,10), trans = 0.8},
+            {name = "Космос", main = Color3.fromRGB(5,5,20), side = Color3.fromRGB(10,10,28), trans = 0.7},
+            {name = "Розовый", main = Color3.fromRGB(30,5,25), side = Color3.fromRGB(35,10,30), trans = 0.75},
+            {name = "Лава", main = Color3.fromRGB(35,10,0), side = Color3.fromRGB(40,15,5), trans = 0.8},
+            {name = "Мята", main = Color3.fromRGB(5,25,20), side = Color3.fromRGB(10,30,25), trans = 0.75},
+            {name = "Арктика", main = Color3.fromRGB(15,25,30), side = Color3.fromRGB(20,30,35), trans = 0.7},
+            {name = "Вампир", main = Color3.fromRGB(25,5,10), side = Color3.fromRGB(30,10,15), trans = 0.8}
         }
         local ti = 1
         
@@ -67,11 +67,23 @@ return {
         tb.TextSize = 12
         tb.BorderSizePixel = 0
         Instance.new("UICorner", tb).CornerRadius = UDim.new(0,4)
+        Instance.new("UIStroke", tb).Thickness = 1.5
+        Instance.new("UIStroke", tb).Color = Color3.fromRGB(0,0,0)
         
         tb.MouseButton1Click:Connect(function()
             ti = ti % #themes + 1
-            GUI.main.BackgroundColor3 = themes[ti].bg
-            tt.Text = "🎨 Тема: " .. themes[ti].name
+            local theme = themes[ti]
+            -- Меняем только фон окна и боковой панели
+            GUI.main.BackgroundColor3 = theme.main
+            GUI.main.BackgroundTransparency = theme.trans
+            -- Ищем боковую панель и меняем её фон
+            for _, child in pairs(GUI.main:GetChildren()) do
+                if child:IsA("Frame") and child.Size.X.Scale == 0 and child.Size.X.Offset == 115 then
+                    child.BackgroundColor3 = theme.side
+                    child.BackgroundTransparency = theme.trans
+                end
+            end
+            tt.Text = "🎨 Тема: " .. theme.name
         end)
     end
 }
