@@ -3,7 +3,6 @@ return {
         local C = GUI.colors
         local pg = GUI.settings
         
-        local lang = "RU"
         local lt = Instance.new("TextLabel", pg)
         lt.Size = UDim2.new(1,0,0,18)
         lt.BackgroundTransparency = 1
@@ -27,12 +26,13 @@ return {
         Instance.new("UIStroke", lb).Color = C.purple
         
         lb.MouseButton1Click:Connect(function()
-            if lang == "RU" then
-                lang = "EN"
+            local currentLang = GUI.getLang()
+            if currentLang == "RU" then
+                GUI.setLang("EN")
                 lb.Text = "EN → RU"
                 lt.Text = "🌐 Language: English"
             else
-                lang = "RU"
+                GUI.setLang("RU")
                 lb.Text = "RU → EN"
                 lt.Text = "🌐 Язык: Русский"
             end
