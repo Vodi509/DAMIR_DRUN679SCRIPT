@@ -42,21 +42,17 @@ return {
         local hb = Instance.new("TextButton", pg) hb.Size = UDim2.new(1,0,0,36) hb.Position = UDim2.new(0,0,0,78)
         hb.BackgroundColor3 = C.btn hb.Text = "🔨 ВКЛЮЧИТЬ МОЛОТ" hb.TextColor3 = C.red hb.Font = Enum.Font.GothamBold hb.TextSize = 12 hb.BorderSizePixel = 0
         Instance.new("UICorner", hb).CornerRadius = UDim.new(0,5)
+        Instance.new("UIStroke", hb).Thickness = 1.5
+        Instance.new("UIStroke", hb).Color = Color3.fromRGB(0,0,0)
         
         local ab = Instance.new("TextButton", pg) ab.Size = UDim2.new(1,0,0,36) ab.Position = UDim2.new(0,0,0,122)
         ab.BackgroundColor3 = C.btn ab.Text = "🤖 АВТО-ФАРМ" ab.TextColor3 = C.grey ab.Font = Enum.Font.GothamBold ab.TextSize = 12 ab.BorderSizePixel = 0
         Instance.new("UICorner", ab).CornerRadius = UDim.new(0,5)
+        Instance.new("UIStroke", ab).Thickness = 1.5
+        Instance.new("UIStroke", ab).Color = Color3.fromRGB(0,0,0)
         
-        -- Подсказка под автофармом
-        local hint = Instance.new("TextLabel", pg)
-        hint.Size = UDim2.new(1,0,0,14)
-        hint.Position = UDim2.new(0,0,0,162)
-        hint.BackgroundTransparency = 1
-        hint.Text = "⚠️ Если сломался - перезайди"
-        hint.TextColor3 = Color3.fromRGB(255,180,50)
-        hint.Font = Enum.Font.Gotham
-        hint.TextSize = 9
-        hint.TextXAlignment = Enum.TextXAlignment.Center
+        local hint = Instance.new("TextLabel", pg) hint.Size = UDim2.new(1,0,0,14) hint.Position = UDim2.new(0,0,0,162) hint.BackgroundTransparency = 1
+        hint.Text = "⚠️ Если сломался - перезайди" hint.TextColor3 = Color3.fromRGB(255,180,50) hint.Font = Enum.Font.Gotham hint.TextSize = 9 hint.TextXAlignment = Enum.TextXAlignment.Center
         
         hb.MouseButton1Click:Connect(function()
             ho = not ho
