@@ -6,86 +6,42 @@ return function()
         if v.Name == "DamirHub" then v:Destroy() end
     end
     
-    local C = {
-        bg = Color3.fromRGB(18,18,24),
-        side = Color3.fromRGB(24,24,32),
-        btn = Color3.fromRGB(32,32,42),
-        white = Color3.new(1,1,1),
-        grey = Color3.fromRGB(140,140,160),
-        green = Color3.fromRGB(0,255,150),
-        red = Color3.fromRGB(255,55,55),
-        blue = Color3.fromRGB(0,200,255),
-        purple = Color3.fromRGB(150,90,255),
-        gold = Color3.fromRGB(255,210,0)
-    }
-    
     local gui = Instance.new("ScreenGui", pg)
     gui.Name = "DamirHub"
     gui.ResetOnSpawn = false
     
     local main = Instance.new("Frame", gui)
-    main.Size = UDim2.new(0,460,0,310)
-    main.Position = UDim2.new(0.5,-230,0.35,0)
-    main.BackgroundColor3 = C.bg
+    main.Size = UDim2.new(0,300,0,200)
+    main.Position = UDim2.new(0.5,-150,0.5,-100)
+    main.BackgroundColor3 = Color3.fromRGB(30,30,40)
     main.BorderSizePixel = 0
     main.Active = true
     main.Draggable = true
-    Instance.new("UICorner", main).CornerRadius = UDim.new(0,8)
+    main.ZIndex = 999
     
-    local side = Instance.new("Frame", main)
-    side.Size = UDim2.new(0,115,1,0)
-    side.BackgroundColor3 = C.side
-    side.BorderSizePixel = 0
+    local title = Instance.new("TextLabel", main)
+    title.Size = UDim2.new(1,0,0,30)
+    title.BackgroundColor3 = Color3.fromRGB(40,40,50)
+    title.Text = "DAMIR HUB v8.0"
+    title.TextColor3 = Color3.new(1,1,1)
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 14
     
-    local logo = Instance.new("TextLabel", side)
-    logo.Size = UDim2.new(1,0,0,36)
-    logo.BackgroundTransparency = 1
-    logo.Text = "DAMIR HUB"
-    logo.TextColor3 = C.red
-    logo.Font = Enum.Font.GothamBold
-    logo.TextSize = 14
-    
-    local pages = {}
-    local function addTab(name, icon, y)
-        local btn = Instance.new("TextButton", side)
-        btn.Size = UDim2.new(1,-14,0,28)
-        btn.Position = UDim2.new(0,7,0,y)
-        btn.BackgroundColor3 = C.btn
-        btn.Text = icon .. " " .. name
-        btn.TextColor3 = C.grey
-        btn.Font = Enum.Font.GothamBold
-        btn.TextSize = 10
-        btn.BorderSizePixel = 0
-        Instance.new("UICorner", btn).CornerRadius = UDim.new(0,4)
-        
-        local page = Instance.new("Frame", main)
-        page.Size = UDim2.new(1,-125,1,-10)
-        page.Position = UDim2.new(0,120,0,10)
-        page.BackgroundTransparency = 1
-        page.Visible = false
-        
-        btn.MouseButton1Click:Connect(function()
-            for _, p in pairs(pages) do p.Visible = false end
-            page.Visible = true
-        end)
-        
-        table.insert(pages, page)
-        return page
-    end
-    
-    local farmPg = addTab("Фарм", "🚀", 45)
-    local funPg = addTab("Fun", "🤡", 80)
-    local setPg = addTab("Настр", "⚙️", 115)
-    local logPg = addTab("Новое", "📋", 150)
-    
-    pages[1].Visible = true
+    local test = Instance.new("TextLabel", main)
+    test.Size = UDim2.new(1,0,0,80)
+    test.Position = UDim2.new(0,0,0,60)
+    test.BackgroundTransparency = 1
+    test.Text = "Если ты это видишь -\nGUI работает!"
+    test.TextColor3 = Color3.fromRGB(0,255,0)
+    test.Font = Enum.Font.GothamBold
+    test.TextSize = 16
     
     return {
-        colors = C,
+        colors = {},
         main = main,
-        farm = farmPg,
-        fun = funPg,
-        settings = setPg,
-        changelog = logPg
+        farm = main,
+        fun = main,
+        settings = main,
+        changelog = main
     }
 end
