@@ -1,45 +1,31 @@
-local B = "https://raw.githubusercontent.com/Vodi509/DAMIR_DRUN679SCRIPT/refs/heads/main/Modules"
+-- Простой тест без модулей
+local plr = game.Players.LocalPlayer
+local pg = plr:WaitForChild("PlayerGui")
 
-local function notify(text)
-    pcall(function()
-        game.StarterGui:SetCore("SendNotification", {
-            Title = "DAMIR HUB",
-            Text = text,
-            Duration = 3
-        })
-    end)
+-- Очистка
+for _, v in pairs(pg:GetChildren()) do
+    if v.Name == "Test" then v:Destroy() end
 end
 
-local function loadMod(name)
-    notify("Гружу: " .. name)
-    local ok, data = pcall(function() return game:HttpGet(B .. "/" .. name) end)
-    if not ok then notify("ОШИБКА: " .. name) return nil end
-    local fn, err = loadstring(data)
-    if not fn then notify("ОШИБКА: " .. name) return nil end
-    local ok2, result = pcall(fn)
-    if not ok2 then notify("ОШИБКА: " .. name) return nil end
-    notify(name .. " ОК")
-    return result
-end
+local sg = Instance.new("ScreenGui", pg)
+sg.Name = "Test"
 
-notify("Старт")
+local box = Instance.new("Frame", sg)
+box.Size = UDim2.new(0, 200, 0, 200)
+box.Position = UDim2.new(0.5, -100, 0.5, -100)
+box.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+box.BorderSizePixel = 0
 
-local gui = loadMod("Gui.lua")
-if not gui then return end
+local text = Instance.new("TextLabel", box)
+text.Size = UDim2.new(1, 0, 1, 0)
+text.BackgroundTransparency = 1
+text.Text = "РАБОТАЕТ!"
+text.TextColor3 = Color3.new(1, 1, 1)
+text.Font = Enum.Font.GothamBold
+text.TextSize = 20
 
-local spn = loadMod("spawn.lua")
-if not spn then return end
-
-local frm = loadMod("farm.lua")
-if not frm then return end
-
-local fun = loadMod("funzone.lua")
-local set = loadMod("settings.lua")
-local log = loadMod("Changelog.lua")
-
-frm.start(gui, spn)
-if fun then fun.start(gui) end
-if set then set.start(gui) end
-if log then log.start(gui) end
-
-notify("ГОТОВО!")
+game.StarterGui:SetCore("SendNotification", {
+    Title = "DAMIR",
+    Text = "Скрипт запущен!",
+    Duration = 3
+})
