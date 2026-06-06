@@ -1,7 +1,7 @@
-local base = "https://raw.githubusercontent.com/Vodi509/DAMIR_DRUN679SCRIPT/main/Modules"
+local base = "https://raw.githubusercontent.com/Vodi509/DAMIR_DRUN679SCRIPT/refs/heads/main/Modules"
 
 local function loadMod(name)
-    local ok, data = pcall(function() return game:HttpGet(base .. "/" .. name .. ".lua") end)
+    local ok, data = pcall(function() return game:HttpGet(base .. "/" .. name) end)
     if not ok then return nil end
     local fn, err = loadstring(data)
     if not fn then return nil end
@@ -10,12 +10,12 @@ local function loadMod(name)
     return result
 end
 
-local gui = loadMod("gui")
-local spn = loadMod("spawn")
-local frm = loadMod("farm")
-local fun = loadMod("funzone")
-local set = loadMod("settings")
-local log = loadMod("changelog")
+local gui = loadMod("Gui.lua")
+local spn = loadMod("spawn.lua")
+local frm = loadMod("farm.lua")
+local fun = loadMod("funzone.lua")
+local set = loadMod("settings.lua")
+local log = loadMod("Changelog.lua")
 
 if not gui or not spn or not frm then return end
 frm.start(gui, spn)
