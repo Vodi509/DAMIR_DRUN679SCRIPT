@@ -1,4 +1,4 @@
-local base = "https://raw.githubusercontent.com/Vodi509/DAMIR_DRUN67_SCRIPT/main/modules"
+local base = "https://raw.githubusercontent.com/Vodi509/DAMIR_DRUN679SCRIPT/main/modules"
 
 local function loadMod(name)
     local ok, data = pcall(function() return game:HttpGet(base .. "/" .. name .. ".lua") end)
