@@ -1,4 +1,4 @@
--- [[ DAMIR HUB v8.0 - SIMPLE MINIMIZE ]] --
+-- [[ DAMIR HUB v8.0 - SAFE MODULAR ]] --
 local B = "https://raw.githubusercontent.com/Vodi509/DAMIR_DRUN679SCRIPT/refs/heads/main/Modules"
 
 local function loadMod(name)
@@ -11,12 +11,10 @@ local function loadMod(name)
     return result
 end
 
--- ==================== GUI ====================
+-- ==================== GUI (всегда создаётся) ====================
 local plr = game.Players.LocalPlayer
 local pg = plr:WaitForChild("PlayerGui")
-for _, v in pairs(pg:GetChildren()) do
-    if v.Name == "DamirHub" or v.Name == "DamirMini" then v:Destroy() end
-end
+for _, v in pairs(pg:GetChildren()) do if v.Name == "DamirHub" then v:Destroy() end end
 
 local C = {
     bg = Color3.fromRGB(18,18,24),
@@ -31,86 +29,30 @@ local C = {
     gold = Color3.fromRGB(255,210,0)
 }
 
-local sg = Instance.new("ScreenGui", pg)
-sg.Name = "DamirHub"
-sg.ResetOnSpawn = false
-
--- Мини-панель
-local mini = Instance.new("Frame", sg)
-mini.Name = "DamirMini"
-mini.Size = UDim2.new(0,130,0,28)
-mini.Position = UDim2.new(0.02,0,0.1,0)
-mini.BackgroundColor3 = C.side
-mini.BorderSizePixel = 0
-mini.Visible = false
-mini.Active = true
-mini.Draggable = true
-mini.ZIndex = 99
-Instance.new("UICorner", mini).CornerRadius = UDim.new(0,6)
-Instance.new("UIStroke", mini).Thickness = 1
-Instance.new("UIStroke", mini).Color = C.purple
-
-local restoreBtn = Instance.new("TextButton", mini)
-restoreBtn.Size = UDim2.new(1,0,1,0)
-restoreBtn.BackgroundTransparency = 1
-restoreBtn.Text = "⚡ DAMIR HUB"
-restoreBtn.TextColor3 = C.red
-restoreBtn.Font = Enum.Font.GothamBold
-restoreBtn.TextSize = 12
-
--- Главное окно
+local sg = Instance.new("ScreenGui", pg) sg.Name = "DamirHub" sg.ResetOnSpawn = false
 local main = Instance.new("Frame", sg)
-main.Size = UDim2.new(0,460,0,310)
-main.Position = UDim2.new(0.5,-230,0.3,0)
-main.BackgroundColor3 = C.bg
-main.BorderSizePixel = 0
-main.Active = true
-main.Draggable = true
-main.ZIndex = 100
+main.Size = UDim2.new(0,460,0,310) main.Position = UDim2.new(0.5,-230,0.3,0)
+main.BackgroundColor3 = C.bg main.BorderSizePixel = 0 main.Active = true main.Draggable = true
 Instance.new("UICorner", main).CornerRadius = UDim.new(0,8)
 
 local side = Instance.new("Frame", main)
-side.Size = UDim2.new(0,115,1,0)
-side.BackgroundColor3 = C.side
-side.BorderSizePixel = 0
+side.Size = UDim2.new(0,115,1,0) side.BackgroundColor3 = C.side side.BorderSizePixel = 0
 
--- Кнопка сворачивания (надпись DAMIR HUB)
-local logo = Instance.new("TextButton", side)
-logo.Size = UDim2.new(1,0,0,36)
-logo.BackgroundTransparency = 1
-logo.Text = "DAMIR HUB"
-logo.TextColor3 = C.red
-logo.Font = Enum.Font.GothamBold
-logo.TextSize = 14
-
-logo.MouseButton1Click:Connect(function()
-    main.Visible = false
-    mini.Visible = true
-end)
-
-restoreBtn.MouseButton1Click:Connect(function()
-    main.Visible = true
-    mini.Visible = false
-end)
+local logo = Instance.new("TextLabel", side)
+logo.Size = UDim2.new(1,0,0,36) logo.BackgroundTransparency = 1
+logo.Text = "DAMIR HUB" logo.TextColor3 = C.red logo.Font = Enum.Font.GothamBold logo.TextSize = 14
 
 local pages = {}
 local function addTab(name, icon, y)
     local btn = Instance.new("TextButton", side)
-    btn.Size = UDim2.new(1,-14,0,28)
-    btn.Position = UDim2.new(0,7,0,y)
-    btn.BackgroundColor3 = C.btn
-    btn.Text = icon .. " " .. name
-    btn.TextColor3 = C.grey
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 10
-    btn.BorderSizePixel = 0
+    btn.Size = UDim2.new(1,-14,0,28) btn.Position = UDim2.new(0,7,0,y)
+    btn.BackgroundColor3 = C.btn btn.Text = icon .. " " .. name
+    btn.TextColor3 = C.grey btn.Font = Enum.Font.GothamBold btn.TextSize = 10 btn.BorderSizePixel = 0
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0,4)
     
     local page = Instance.new("Frame", main)
-    page.Size = UDim2.new(1,-125,1,-10)
-    page.Position = UDim2.new(0,120,0,10)
-    page.BackgroundTransparency = 1
-    page.Visible = false
+    page.Size = UDim2.new(1,-125,1,-10) page.Position = UDim2.new(0,120,0,10)
+    page.BackgroundTransparency = 1 page.Visible = false
     
     btn.MouseButton1Click:Connect(function()
         for _, p in pairs(pages) do p.Visible = false end
@@ -127,6 +69,7 @@ local setPg = addTab("Настр", "⚙️", 115)
 local logPg = addTab("Новое", "📋", 150)
 pages[1].Visible = true
 
+-- Передаём страницы в модули
 local GUI = {colors = C, main = main, farm = farmPg, fun = funPg, settings = setPg, changelog = logPg}
 
 -- ==================== ЗАГРУЗКА МОДУЛЕЙ ====================
