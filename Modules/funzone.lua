@@ -6,7 +6,7 @@ return {
         local t = Instance.new("TextLabel", pg)
         t.Size = UDim2.new(1,0,0,18)
         t.BackgroundTransparency = 1
-        t.Text = "СЕКРЕТНАЯ КНОПКА ДАМИРА"
+        t.Text = "СЕКРЕТНАЯ КНОПКА"
         t.TextColor3 = C.gold
         t.Font = Enum.Font.GothamBold
         t.TextSize = 12
@@ -44,21 +44,18 @@ return {
             ab.BackgroundColor3 = C.btn
         end)
         
-        -- Мемы с прямыми ссылками (работают на всех устройствах)
         local memes = {
-            "http://www.roblox.com/asset/?id=18314115147",
-            "http://www.roblox.com/asset/?id=6072171427",
-            "http://www.roblox.com/asset/?id=6072166311",
-            "http://www.roblox.com/asset/?id=6072153923",
-            "http://www.roblox.com/asset/?id=1089541000",
-            "http://www.roblox.com/asset/?id=24859638"
+            "rbxassetid://18314115147",
+            "rbxassetid://6072171427",
+            "rbxassetid://6072166311",
+            "rbxassetid://6072153923"
         }
         
         local mi = Instance.new("ImageLabel", pg)
         mi.Size = UDim2.new(0,130,0,130)
         mi.Position = UDim2.new(0,0,0,108)
         mi.BackgroundColor3 = C.side
-        mi.Image = "rbxassetid://18314115147"
+        mi.Image = memes[1]
         Instance.new("UICorner", mi).CornerRadius = UDim.new(0,5)
         
         local mb = Instance.new("TextButton", pg)
@@ -73,10 +70,7 @@ return {
         Instance.new("UICorner", mb).CornerRadius = UDim.new(0,4)
         
         mb.MouseButton1Click:Connect(function()
-            local id = memes[math.random(1, #memes)]
-            pcall(function()
-                mi.Image = id
-            end)
+            mi.Image = memes[math.random(1, #memes)]
         end)
     end
 }
