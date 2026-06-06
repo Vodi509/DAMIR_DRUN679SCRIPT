@@ -1,4 +1,4 @@
--- [[ DAMIR HUB v8.0 - SAFE MODULAR ]] --
+-- [[ DAMIR HUB v8.0 - NO FUN ZONE ]] --
 local B = "https://raw.githubusercontent.com/Vodi509/DAMIR_DRUN679SCRIPT/refs/heads/main/Modules"
 
 local function loadMod(name)
@@ -11,7 +11,6 @@ local function loadMod(name)
     return result
 end
 
--- ==================== GUI (всегда создаётся) ====================
 local plr = game.Players.LocalPlayer
 local pg = plr:WaitForChild("PlayerGui")
 for _, v in pairs(pg:GetChildren()) do if v.Name == "DamirHub" then v:Destroy() end end
@@ -49,37 +48,26 @@ local function addTab(name, icon, y)
     btn.BackgroundColor3 = C.btn btn.Text = icon .. " " .. name
     btn.TextColor3 = C.grey btn.Font = Enum.Font.GothamBold btn.TextSize = 10 btn.BorderSizePixel = 0
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0,4)
-    
     local page = Instance.new("Frame", main)
     page.Size = UDim2.new(1,-125,1,-10) page.Position = UDim2.new(0,120,0,10)
     page.BackgroundTransparency = 1 page.Visible = false
-    
-    btn.MouseButton1Click:Connect(function()
-        for _, p in pairs(pages) do p.Visible = false end
-        page.Visible = true
-    end)
-    
-    table.insert(pages, page)
-    return page
+    btn.MouseButton1Click:Connect(function() for _, p in pairs(pages) do p.Visible = false end page.Visible = true end)
+    table.insert(pages, page) return page
 end
 
 local farmPg = addTab("Фарм", "🚀", 45)
-local funPg = addTab("Fun", "🤡", 80)
-local setPg = addTab("Настр", "⚙️", 115)
-local logPg = addTab("Новое", "📋", 150)
+local setPg = addTab("Настр", "⚙️", 80)
+local logPg = addTab("Новое", "📋", 115)
 pages[1].Visible = true
 
--- Передаём страницы в модули
-local GUI = {colors = C, main = main, farm = farmPg, fun = funPg, settings = setPg, changelog = logPg}
+local GUI = {colors = C, main = main, farm = farmPg, settings = setPg, changelog = logPg}
 
--- ==================== ЗАГРУЗКА МОДУЛЕЙ ====================
+-- Загрузка модулей
 local spn = loadMod("spawn.lua") or {click = function() return false end}
 local frm = loadMod("farm.lua")
-local fun = loadMod("funzone.lua")
 local set = loadMod("settings.lua")
 local log = loadMod("Changelog.lua")
 
 if frm then frm.start(GUI, spn) end
-if fun then fun.start(GUI) end
 if set then set.start(GUI) end
 if log then log.start(GUI) end
