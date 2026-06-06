@@ -1,4 +1,4 @@
--- [[ DAMIR HUB v8.0 - MINIMIZE & CLOSE ]] --
+-- [[ DAMIR HUB v8.0 - SIMPLE MINIMIZE ]] --
 local B = "https://raw.githubusercontent.com/Vodi509/DAMIR_DRUN679SCRIPT/refs/heads/main/Modules"
 
 local function loadMod(name)
@@ -35,7 +35,7 @@ local sg = Instance.new("ScreenGui", pg)
 sg.Name = "DamirHub"
 sg.ResetOnSpawn = false
 
--- Мини-панель (свёрнутое окно)
+-- Мини-панель
 local mini = Instance.new("Frame", sg)
 mini.Name = "DamirMini"
 mini.Size = UDim2.new(0,130,0,28)
@@ -69,49 +69,21 @@ main.Draggable = true
 main.ZIndex = 100
 Instance.new("UICorner", main).CornerRadius = UDim.new(0,8)
 
--- Заголовок
-local header = Instance.new("Frame", main)
-header.Size = UDim2.new(1,0,0,30)
-header.BackgroundColor3 = C.side
-header.BorderSizePixel = 0
-Instance.new("UICorner", header).CornerRadius = UDim.new(0,8)
+local side = Instance.new("Frame", main)
+side.Size = UDim2.new(0,115,1,0)
+side.BackgroundColor3 = C.side
+side.BorderSizePixel = 0
 
-local title = Instance.new("TextLabel", header)
-title.Size = UDim2.new(1,-50,1,0)
-title.Position = UDim2.new(0,12,0,0)
-title.BackgroundTransparency = 1
-title.Text = "DAMIR HUB v8.0"
-title.TextColor3 = C.white
-title.Font = Enum.Font.GothamBold
-title.TextSize = 13
-title.TextXAlignment = Enum.TextXAlignment.Left
+-- Кнопка сворачивания (надпись DAMIR HUB)
+local logo = Instance.new("TextButton", side)
+logo.Size = UDim2.new(1,0,0,36)
+logo.BackgroundTransparency = 1
+logo.Text = "DAMIR HUB"
+logo.TextColor3 = C.red
+logo.Font = Enum.Font.GothamBold
+logo.TextSize = 14
 
--- Кнопка сворачивания
-local minBtn = Instance.new("TextButton", header)
-minBtn.Size = UDim2.new(0,22,0,22)
-minBtn.Position = UDim2.new(1,-50,0,4)
-minBtn.BackgroundColor3 = C.purple
-minBtn.Text = "—"
-minBtn.TextColor3 = C.white
-minBtn.Font = Enum.Font.GothamBold
-minBtn.TextSize = 14
-minBtn.BorderSizePixel = 0
-Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0,11)
-
--- Кнопка закрытия
-local closeBtn = Instance.new("TextButton", header)
-closeBtn.Size = UDim2.new(0,22,0,22)
-closeBtn.Position = UDim2.new(1,-25,0,4)
-closeBtn.BackgroundColor3 = C.red
-closeBtn.Text = "✕"
-closeBtn.TextColor3 = C.white
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 12
-closeBtn.BorderSizePixel = 0
-Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0,11)
-
--- Логика кнопок
-minBtn.MouseButton1Click:Connect(function()
+logo.MouseButton1Click:Connect(function()
     main.Visible = false
     mini.Visible = true
 end)
@@ -120,25 +92,6 @@ restoreBtn.MouseButton1Click:Connect(function()
     main.Visible = true
     mini.Visible = false
 end)
-
-closeBtn.MouseButton1Click:Connect(function()
-    sg:Destroy()
-end)
-
--- Боковая панель
-local side = Instance.new("Frame", main)
-side.Size = UDim2.new(0,115,1,-30)
-side.Position = UDim2.new(0,0,0,30)
-side.BackgroundColor3 = C.side
-side.BorderSizePixel = 0
-
-local logo = Instance.new("TextLabel", side)
-logo.Size = UDim2.new(1,0,0,36)
-logo.BackgroundTransparency = 1
-logo.Text = "DAMIR HUB"
-logo.TextColor3 = C.red
-logo.Font = Enum.Font.GothamBold
-logo.TextSize = 14
 
 local pages = {}
 local function addTab(name, icon, y)
@@ -154,8 +107,8 @@ local function addTab(name, icon, y)
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0,4)
     
     local page = Instance.new("Frame", main)
-    page.Size = UDim2.new(1,-125,1,-40)
-    page.Position = UDim2.new(0,120,0,35)
+    page.Size = UDim2.new(1,-125,1,-10)
+    page.Position = UDim2.new(0,120,0,10)
     page.BackgroundTransparency = 1
     page.Visible = false
     
