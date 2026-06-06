@@ -1,42 +1,37 @@
 return {
-    start = function(gui)
-        local C = gui.colors
-        local page = gui.changelog
+    start = function(GUI)
+        local C = GUI.colors
+        local pg = GUI.changelog
         
-        local title = Instance.new("TextLabel", page)
-        title.Size = UDim2.new(1,0,0,18)
-        title.BackgroundTransparency = 1
-        title.Text = "📋 ЧТО НОВОГО"
-        title.TextColor3 = C.white
-        title.Font = Enum.Font.GothamBold
-        title.TextSize = 12
-        title.TextXAlignment = Enum.TextXAlignment.Left
+        local t = Instance.new("TextLabel", pg)
+        t.Size = UDim2.new(1,0,0,18)
+        t.BackgroundTransparency = 1
+        t.Text = "📋 ЧТО НОВОГО"
+        t.TextColor3 = C.white
+        t.Font = Enum.Font.GothamBold
+        t.TextSize = 12
+        t.TextXAlignment = Enum.TextXAlignment.Left
         
-        local text = Instance.new("TextLabel", page)
-        text.Size = UDim2.new(1,0,0,240)
-        text.Position = UDim2.new(0,0,0,22)
-        text.BackgroundColor3 = C.side
-        text.Text = [[
-v8.0 (новый скрипт):
-✅ Всё с нуля
+        local l = Instance.new("TextLabel", pg)
+        l.Size = UDim2.new(1,0,0,240)
+        l.Position = UDim2.new(0,0,0,22)
+        l.BackgroundColor3 = C.side
+        l.Text = [[v8.1 - Обновление:
+✅ Прозрачность 25%
+✅ Сворачивание и закрытие
+✅ Яркие цвета GUI
+✅ Починен смена языка
+✅ Починен смена темы
+✅ 10 цветов интерфейса
+✅ Анекдоты вместо мемов
+✅ Убран ползунок прозрачности
 ✅ Молот 200/-1500
-✅ Автофарм с респавном 45/40
-✅ Fun Zone +100M AURA
-✅ Мем-генератор
-✅ Смена языка RU↔EN
-✅ Смена темы (5 цветов)
-✅ Вкладка "Что нового"
-
-Планируется:
-⏳ Сворачивание
-⏳ Больше мемов
-⏳ Выбор машин
-]]
-        text.TextColor3 = C.grey
-        text.Font = Enum.Font.Gotham
-        text.TextSize = 10
-        text.TextXAlignment = Enum.TextXAlignment.Left
-        text.TextYAlignment = Enum.TextYAlignment.Top
-        Instance.new("UICorner", text).CornerRadius = UDim.new(0,5)
+✅ Автофарм с респавном]]
+        l.TextColor3 = C.white
+        l.Font = Enum.Font.Gotham
+        l.TextSize = 10
+        l.TextXAlignment = Enum.TextXAlignment.Left
+        l.TextYAlignment = Enum.TextYAlignment.Top
+        Instance.new("UICorner", l).CornerRadius = UDim.new(0,5)
     end
 }
