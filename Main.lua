@@ -1,4 +1,4 @@
--- [[ DAMIR HUB v8.1 - WORKING BUTTONS ]] --
+-- [[ DAMIR HUB v8.1 - FIXED LANGUAGES + MINI POSITION ]] --
 local B = "https://raw.githubusercontent.com/Vodi509/DAMIR_DRUN679SCRIPT/refs/heads/main/Modules"
 
 local function loadMod(name)
@@ -29,15 +29,33 @@ local C = {
 }
 
 local TRANS = 0.25
+local lang = "RU"
+
+local T = {
+    RU = {
+        farm = "🚀 Фарм",
+        fun = "🤡 Fun",
+        settings = "⚙️ Настр",
+        changelog = "📋 Новое",
+        title = "DAMIR HUB v8.1"
+    },
+    EN = {
+        farm = "🚀 Farm",
+        fun = "🤡 Fun",
+        settings = "⚙️ Settings",
+        changelog = "📋 News",
+        title = "DAMIR HUB v8.1"
+    }
+}
 
 local sg = Instance.new("ScreenGui", pg)
 sg.Name = "DamirHub"
 sg.ResetOnSpawn = false
 sg.IgnoreGuiInset = true
 
--- Мини-панель
+-- Мини-панель (чуть ниже)
 local mini = Instance.new("Frame", sg) mini.Name = "DamirMini"
-mini.Size = UDim2.new(0,130,0,28) mini.Position = UDim2.new(0.02,0,0.1,0)
+mini.Size = UDim2.new(0,130,0,28) mini.Position = UDim2.new(0.02,0,0.15,0)
 mini.BackgroundColor3 = C.side mini.BackgroundTransparency = TRANS mini.BorderSizePixel = 0
 mini.Visible = false mini.Active = true mini.Draggable = true
 Instance.new("UICorner", mini).CornerRadius = UDim.new(0,6)
@@ -62,7 +80,7 @@ Instance.new("UICorner", hdr).CornerRadius = UDim.new(0,8)
 
 local ht = Instance.new("TextLabel", hdr)
 ht.Size = UDim2.new(1,-60,1,0) ht.Position = UDim2.new(0,12,0,0) ht.BackgroundTransparency = 1
-ht.Text = "DAMIR HUB v8.1" ht.TextColor3 = C.white ht.Font = Enum.Font.GothamBold ht.TextSize = 13 ht.TextXAlignment = Enum.TextXAlignment.Left
+ht.Text = T[lang].title ht.TextColor3 = C.white ht.Font = Enum.Font.GothamBold ht.TextSize = 13 ht.TextXAlignment = Enum.TextXAlignment.Left
 
 local minB = Instance.new("TextButton", hdr)
 minB.Size = UDim2.new(0,22,0,22) minB.Position = UDim2.new(1,-50,0,4)
@@ -90,6 +108,7 @@ logo.Size = UDim2.new(1,0,0,36) logo.BackgroundTransparency = 1
 logo.Text = "DAMIR HUB" logo.TextColor3 = C.red logo.Font = Enum.Font.GothamBold logo.TextSize = 14
 
 local pages = {}
+local tabBtns = {}
 local function addTab(name, icon, y)
     local btn = Instance.new("TextButton", side)
     btn.Size = UDim2.new(1,-14,0,28) btn.Position = UDim2.new(0,7,0,y)
@@ -105,23 +124,40 @@ local function addTab(name, icon, y)
     btn.MouseButton1Click:Connect(function()
         for _, p in pairs(pages) do p.Visible = false end
         page.Visible = true
-        for _, b in pairs(side:GetChildren()) do
-            if b:IsA("TextButton") then b.BackgroundColor3 = C.btn end
-        end
+        for _, b in pairs(tabBtns) do b.BackgroundColor3 = C.btn end
         btn.BackgroundColor3 = C.purple
     end)
     
     table.insert(pages, page)
-    return page
+    table.insert(tabBtns, btn)
+    return page, btn
 end
 
-local farmPg = addTab("Фарм", "🚀", 45)
-local funPg = addTab("Fun", "🤡", 80)
-local setPg = addTab("Настр", "⚙️", 115)
-local logPg = addTab("Новое", "📋", 150)
+local farmPg, farmBtn = addTab(T[lang].farm, "", 45)
+local funPg, funBtn = addTab(T[lang].fun, "", 80)
+local setPg, setBtn = addTab(T[lang].settings, "", 115)
+local logPg, logBtn = addTab(T[lang].changelog, "", 150)
 pages[1].Visible = true
+tabBtns[1].BackgroundColor3 = C.purple
 
-local GUI = {colors = C, main = main, farm = farmPg, fun = funPg, settings = setPg, changelog = logPg}
+local GUI = {
+    colors = C,
+    main = main,
+    farm = farmPg,
+    fun = funPg,
+    settings = setPg,
+    changelog = logPg,
+    lang = lang,
+    setLang = function(l)
+        lang = l
+        ht.Text = T[lang].title
+        farmBtn.Text = T[lang].farm
+        funBtn.Text = T[lang].fun
+        setBtn.Text = T[lang].settings
+        logBtn.Text = T[lang].changelog
+    end,
+    getLang = function() return lang end
+}
 
 -- Загрузка модулей
 local spn = loadMod("spawn.lua") or {click = function() return false end}
