@@ -133,7 +133,7 @@ return {
         speedValue.Size = UDim2.new(0.15,0,0,20)
         speedValue.Position = UDim2.new(0.51,0,0,yOffset+rowH*3+28)
         speedValue.BackgroundColor3 = C.side
-        speedValue.Text = "127"
+        speedValue.Text = "80"
         speedValue.TextColor3 = C.white
         speedValue.Font = Enum.Font.GothamBold
         speedValue.TextSize = 10
@@ -198,169 +198,107 @@ return {
         
         noclipBtn.MouseButton1Click:Connect(toggleNoclip)
         
-        -- ===== ТОЧНАЯ ЛОГИКА FLY ИЗ ТВОЕГО СКРИПТА =====
-        local flySpeed = 127
-        local flying = false
-        local enabled = false
-        local move_dir = Vector3.new()
-        local keys_dn = {}
+        -- ===== FLY ДЛЯ ТЕЛЕФОНА (РАБОТАЕТ ОТ ДЖОЙСТИКА) =====
+        local flyActive = false
+        local flySpeed = 80
+        local bv = nil
+        local bg = nil
+        local flyConn = nil
         
-        local MVKS = {
-            [Enum.KeyCode.D] = Vector3.new(1, 0, 0),
-            [Enum.KeyCode.A] = Vector3.new(-1, 0, 0),
-            [Enum.KeyCode.S] = Vector3.new(0, 0, 1),
-            [Enum.KeyCode.W] = Vector3.new(0, 0, -1),
-            [Enum.KeyCode.E] = Vector3.new(0, 1, 0),
-            [Enum.KeyCode.Q] = Vector3.new(0, -1, 0),
-            [Enum.KeyCode.Right] = Vector3.new(1, 0, 0),
-            [Enum.KeyCode.Left] = Vector3.new(-1, 0, 0),
-            [Enum.KeyCode.Down] = Vector3.new(0, 0, 1),
-            [Enum.KeyCode.Up] = Vector3.new(0, 0, -1),
-            [Enum.KeyCode.PageUp] = Vector3.new(0, 1, 0),
-            [Enum.KeyCode.PageDown] = Vector3.new(0, -1, 0),
-        }
-        
-        local uis = game:GetService("UserInputService")
-        local lp = game.Players.LocalPlayer
-        local ms = lp:GetMouse()
-        local humanoid = nil
-        local parent = nil
-        
-        local fly_rp = nil
-        local fly_bg = nil
-        local fly_pt = nil
-        local fly_evts = {}
-        
-        local function fly_dir()
-            local front = workspace.CurrentCamera:ScreenPointToRay(ms.X, ms.Y).Direction
-            return CFrame.new(Vector3.new(), front) * move_dir
+        local function stopFly()
+            local player = game.Players.LocalPlayer
+            local char = player and player.Character
+            if bv then bv:Destroy() bv = nil end
+            if bg then bg:Destroy() bg = nil end
+            if flyConn then flyConn:Disconnect() flyConn = nil end
+            if char then
+                local hum = char:FindFirstChildOfClass("Humanoid")
+                if hum then
+                    hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
+                    hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
+                end
+                local root = char:FindFirstChild("HumanoidRootPart")
+                if root then root.Velocity = Vector3.zero end
+            end
         end
         
-        local function initFly()
-            local ch = lp.Character
-            if not ch then return end
-            humanoid = ch:WaitForChild("Humanoid")
-            parent = humanoid.RootPart
+        local function startFly()
+            local player = game.Players.LocalPlayer
+            local char = player.Character
+            if not char then
+                task.wait(0.5)
+                char = player.Character
+                if not char then return end
+            end
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            local root = char:FindFirstChild("HumanoidRootPart")
+            if not hum or not root then return end
             
-            if fly_rp then fly_rp:Destroy() end
-            if fly_bg then fly_bg:Destroy() end
+            hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+            hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
             
-            local md = Instance.new("Model")
-            fly_pt = Instance.new("Part", md)
-            fly_pt.Anchored = true
-            fly_pt.CanCollide = false
-            md.PrimaryPart = fly_pt
+            bg = Instance.new("BodyGyro", root)
+            bg.P = 1e4
+            bg.MaxTorque = Vector3.new(1e5, 1e5, 1e5)
+            bg.CFrame = root.CFrame
             
-            fly_bg = Instance.new("BodyGyro", parent)
-            fly_bg.MaxTorque = Vector3.new()
-            fly_bg.P = 3e4
+            bv = Instance.new("BodyVelocity", root)
+            bv.P = 1e4
+            bv.MaxForce = Vector3.new(1e6, 1e6, 1e6)
+            bv.Velocity = Vector3.zero
             
-            fly_rp = Instance.new("RocketPropulsion", parent)
-            fly_rp.MaxTorque = Vector3.new(1e4, 1e4, 1e4)
-            fly_rp.CartoonFactor = 1
-            fly_rp.Target = fly_pt
-            fly_rp.MaxSpeed = flySpeed
-            fly_rp.MaxThrust = 5e5
-            fly_rp.ThrustP = 1e5
-            fly_rp.ThrustD = math.huge
-            fly_rp.TurnP = 1e5
-            fly_rp.TurnD = 2e2
-            
-            enabled = false
-        end
-        
-        local function enableFly()
-            if not fly_rp then return end
-            enabled = true
-            fly_bg.MaxTorque = Vector3.new(3e4, 0, 3e4)
-            fly_rp.MaxTorque = Vector3.new(1e4, 1e4, 1e4)
-        end
-        
-        local function disableFly()
-            if not fly_rp then return end
-            enabled = false
-            fly_bg.MaxTorque = Vector3.new()
-            fly_rp.MaxTorque = Vector3.new()
-            if fly_rp then fly_rp:Abort() end
-            flying = false
-            if humanoid then humanoid.AutoRotate = true end
-            if parent then parent.Velocity = Vector3.new() end
+            flyConn = game:GetService("RunService").RenderStepped:Connect(function()
+                if not flyActive then return end
+                local c = player.Character
+                if not c or not c.PrimaryPart then
+                    stopFly()
+                    return
+                end
+                
+                -- Получаем направление джойстика (работает на телефоне)
+                local moveDir = game:GetService("UserInputService"):GetMoveDirection()
+                local cam = workspace.CurrentCamera
+                
+                -- Движение относительно камеры
+                local forward = cam.CFrame.LookVector * moveDir.Z
+                local right = cam.CFrame.RightVector * moveDir.X
+                local moveVector = (forward + right) * flySpeed
+                
+                if bv then
+                    bv.Velocity = moveVector
+                end
+                
+                if bg and moveVector.Magnitude > 0.1 then
+                    bg.CFrame = CFrame.new(root.Position, root.Position + moveVector.Unit)
+                end
+            end)
         end
         
         local function toggleFly()
-            if enabled then
-                disableFly()
-                flyBtn.Text = "🕊 FLY: ВЫКЛ"
-                flyBtn.TextColor3 = Color3.fromRGB(255,100,100)
-            else
-                if not fly_rp then initFly() end
-                enableFly()
+            flyActive = not flyActive
+            if flyActive then
                 flyBtn.Text = "🕊 FLY: ВКЛ"
                 flyBtn.TextColor3 = Color3.fromRGB(100,255,100)
+                startFly()
+            else
+                flyBtn.Text = "🕊 FLY: ВЫКЛ"
+                flyBtn.TextColor3 = Color3.fromRGB(255,100,100)
+                stopFly()
             end
         end
         
-        -- Обработчики клавиш движения
-        uis.InputBegan:Connect(function(i, p)
-            if p then return end
-            if MVKS[i.KeyCode] and not keys_dn[i.KeyCode] then
-                move_dir = move_dir + MVKS[i.KeyCode]
-                keys_dn[i.KeyCode] = true
-            end
-        end)
+        flyBtn.MouseButton1Click:Connect(toggleFly)
         
-        uis.InputEnded:Connect(function(i, p)
-            if p then return end
-            if MVKS[i.KeyCode] and keys_dn[i.KeyCode] then
-                move_dir = move_dir - MVKS[i.KeyCode]
-                keys_dn[i.KeyCode] = nil
-            end
-        end)
-        
-        -- Основной цикл полёта
-        game:GetService("RunService").RenderStepped:Connect(function()
-            if not fly_rp or not parent then return end
-            local do_fly = enabled and move_dir.Magnitude > 0
-            if flying ~= do_fly then
-                flying = do_fly
-                if humanoid then humanoid.AutoRotate = not do_fly end
-                if not do_fly then
-                    parent.Velocity = Vector3.new()
-                    fly_rp:Abort()
-                    return
-                end
-                fly_rp:Fire()
-            end
-            if fly_pt then
-                fly_pt.Position = parent.Position + 4096 * fly_dir()
-            end
-        end)
-        
-        -- Смена скорости
         speedDown.MouseButton1Click:Connect(function()
             flySpeed = math.max(20, flySpeed - 10)
             speedValue.Text = tostring(flySpeed)
-            if fly_rp then fly_rp.MaxSpeed = flySpeed end
         end)
-        
         speedUp.MouseButton1Click:Connect(function()
-            flySpeed = math.min(500, flySpeed + 10)
+            flySpeed = math.min(300, flySpeed + 10)
             speedValue.Text = tostring(flySpeed)
-            if fly_rp then fly_rp.MaxSpeed = flySpeed end
         end)
         
-        flyBtn.MouseButton1Click:Connect(toggleFly)
-        
-        -- Пересоздаём при респавне
-        lp.CharacterAdded:Connect(function()
-            wait(0.5)
-            initFly()
-            if enabled then
-                enableFly()
-            end
-        end)
-        
-        -- Обработчики молота
+        -- ОБРАБОТЧИКИ МОЛОТА
         hDown.MouseButton1Click:Connect(function()
             local v = math.max(100, (GUI.hammerHeight or 200) - 10)
             GUI.hammerHeight = v
@@ -382,7 +320,20 @@ return {
             pValue.Text = tostring(v)
         end)
         
-        -- Инициализация
-        initFly()
+        -- Пересоздаём полёт при респавне
+        game.Players.LocalPlayer.CharacterAdded:Connect(function()
+            if flyActive then
+                task.wait(1)
+                startFly()
+            end
+        end)
+        
+        -- Очистка при телепорте
+        game.Players.LocalPlayer.OnTeleport:Connect(function()
+            if flyActive then
+                flyActive = false
+                stopFly()
+            end
+        end)
     end
 }
