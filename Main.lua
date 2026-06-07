@@ -1,4 +1,4 @@
--- [[ DAMIR HUB v8.1 - FIXED LANGUAGES + MINI POSITION ]] --
+-- [[ DAMIR HUB v8.1 - NO FUNZONE, BRIGHT COLORS ]] --
 local B = "https://raw.githubusercontent.com/Vodi509/DAMIR_DRUN679SCRIPT/refs/heads/main/Modules"
 
 local function loadMod(name)
@@ -32,20 +32,8 @@ local TRANS = 0.25
 local lang = "RU"
 
 local T = {
-    RU = {
-        farm = "🚀 Фарм",
-        fun = "🤡 Fun",
-        settings = "⚙️ Настр",
-        changelog = "📋 Новое",
-        title = "DAMIR HUB v8.1"
-    },
-    EN = {
-        farm = "🚀 Farm",
-        fun = "🤡 Fun",
-        settings = "⚙️ Settings",
-        changelog = "📋 News",
-        title = "DAMIR HUB v8.1"
-    }
+    RU = {farm = "🚀 Фарм", settings = "⚙️ Настр", changelog = "📋 Новое", title = "DAMIR HUB v8.1"},
+    EN = {farm = "🚀 Farm", settings = "⚙️ Settings", changelog = "📋 News", title = "DAMIR HUB v8.1"}
 }
 
 local sg = Instance.new("ScreenGui", pg)
@@ -53,7 +41,7 @@ sg.Name = "DamirHub"
 sg.ResetOnSpawn = false
 sg.IgnoreGuiInset = true
 
--- Мини-панель (чуть ниже)
+-- Мини-панель
 local mini = Instance.new("Frame", sg) mini.Name = "DamirMini"
 mini.Size = UDim2.new(0,130,0,28) mini.Position = UDim2.new(0.02,0,0.15,0)
 mini.BackgroundColor3 = C.side mini.BackgroundTransparency = TRANS mini.BorderSizePixel = 0
@@ -133,10 +121,9 @@ local function addTab(name, icon, y)
     return page, btn
 end
 
-local farmPg, farmBtn = addTab(T[lang].farm, "", 45)
-local funPg, funBtn = addTab(T[lang].fun, "", 80)
-local setPg, setBtn = addTab(T[lang].settings, "", 115)
-local logPg, logBtn = addTab(T[lang].changelog, "", 150)
+local farmPg, farmBtn = addTab(T[lang].farm, "", 50)
+local setPg, setBtn = addTab(T[lang].settings, "", 95)
+local logPg, logBtn = addTab(T[lang].changelog, "", 140)
 pages[1].Visible = true
 tabBtns[1].BackgroundColor3 = C.purple
 
@@ -144,7 +131,6 @@ local GUI = {
     colors = C,
     main = main,
     farm = farmPg,
-    fun = funPg,
     settings = setPg,
     changelog = logPg,
     lang = lang,
@@ -152,7 +138,6 @@ local GUI = {
         lang = l
         ht.Text = T[lang].title
         farmBtn.Text = T[lang].farm
-        funBtn.Text = T[lang].fun
         setBtn.Text = T[lang].settings
         logBtn.Text = T[lang].changelog
     end,
@@ -162,11 +147,9 @@ local GUI = {
 -- Загрузка модулей
 local spn = loadMod("spawn.lua") or {click = function() return false end}
 local frm = loadMod("farm.lua")
-local fun = loadMod("funzone.lua")
 local set = loadMod("settings.lua")
 local log = loadMod("Changelog.lua")
 
 if frm then frm.start(GUI, spn) end
-if fun then fun.start(GUI) end
 if set then set.start(GUI) end
 if log then log.start(GUI) end
