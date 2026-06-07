@@ -16,7 +16,7 @@ return {
         title.TextXAlignment = Enum.TextXAlignment.Left
         
         local yOffset = 22
-        local rowH = 28
+        local rowH = 32
         
         -- ВЫСОТА МОЛОТА
         local hLabel = Instance.new("TextLabel", pg)
@@ -50,7 +50,7 @@ return {
         
         local hUp = Instance.new("TextButton", pg)
         hUp.Size = UDim2.new(0.1,0,0,rowH)
-        hUp.Position = UDim2.new(0.68,0,0,yOffset)
+        hUp.Position = UDim2.new(0.69,0,0,yOffset)
         hUp.BackgroundColor3 = C.btn
         hUp.Text = "+10"
         hUp.TextColor3 = C.white
@@ -90,7 +90,7 @@ return {
         
         local pUp = Instance.new("TextButton", pg)
         pUp.Size = UDim2.new(0.1,0,0,rowH)
-        pUp.Position = UDim2.new(0.68,0,0,yOffset+rowH+4)
+        pUp.Position = UDim2.new(0.69,0,0,yOffset+rowH+4)
         pUp.BackgroundColor3 = C.btn
         pUp.Text = "+50"
         pUp.TextColor3 = C.white
@@ -98,24 +98,76 @@ return {
         pUp.TextSize = 10
         Instance.new("UICorner", pUp).CornerRadius = UDim.new(0,4)
         
-        -- NOCLIP
+        -- ===== NOCLIP (УВЕЛИЧЕННЫЙ) =====
         local noclipBtn = Instance.new("TextButton", pg)
-        noclipBtn.Size = UDim2.new(0.45,0,0,rowH)
-        noclipBtn.Position = UDim2.new(0,0,0,yOffset+rowH*2+12)
+        noclipBtn.Size = UDim2.new(0.48,0,0,rowH)
+        noclipBtn.Position = UDim2.new(0.01,0,0,yOffset+rowH*2+12)
         noclipBtn.BackgroundColor3 = C.btn
-        noclipBtn.Text = "🚪NOCLIP:ВЫКЛ"
+        noclipBtn.Text = "🚪 NOCLIP: ВЫКЛ"
         noclipBtn.TextColor3 = Color3.fromRGB(255,100,100)
         noclipBtn.Font = Enum.Font.GothamBold
-        noclipBtn.TextSize = 10
+        noclipBtn.TextSize = 11
         Instance.new("UICorner", noclipBtn).CornerRadius = UDim.new(0,5)
         
+        -- ===== FLY (ТАКОГО ЖЕ РАЗМЕРА, РЯДОМ) =====
+        local flyBtn = Instance.new("TextButton", pg)
+        flyBtn.Size = UDim2.new(0.48,0,0,rowH)
+        flyBtn.Position = UDim2.new(0.51,0,0,yOffset+rowH*2+12)
+        flyBtn.BackgroundColor3 = C.btn
+        flyBtn.Text = "🕊 FLY: ВЫКЛ"
+        flyBtn.TextColor3 = Color3.fromRGB(255,100,100)
+        flyBtn.Font = Enum.Font.GothamBold
+        flyBtn.TextSize = 11
+        Instance.new("UICorner", flyBtn).CornerRadius = UDim.new(0,5)
+        
+        -- Регулятор скорости (под FLY)
+        local speedLabel = Instance.new("TextLabel", pg)
+        speedLabel.Size = UDim2.new(0.3,0,0,rowH-6)
+        speedLabel.Position = UDim2.new(0.51,0,0,yOffset+rowH*3+16)
+        speedLabel.BackgroundTransparency = 1
+        speedLabel.Text = "Скорость FLY:"
+        speedLabel.TextColor3 = C.white
+        speedLabel.Font = Enum.Font.Gotham
+        speedLabel.TextSize = 9
+        
+        local speedValue = Instance.new("TextLabel", pg)
+        speedValue.Size = UDim2.new(0.1,0,0,rowH-6)
+        speedValue.Position = UDim2.new(0.51,0,0,yOffset+rowH*3+26)
+        speedValue.BackgroundColor3 = C.side
+        speedValue.Text = "5"
+        speedValue.TextColor3 = C.white
+        speedValue.Font = Enum.Font.GothamBold
+        speedValue.TextSize = 9
+        Instance.new("UICorner", speedValue).CornerRadius = UDim.new(0,4)
+        
+        local speedDown = Instance.new("TextButton", pg)
+        speedDown.Size = UDim2.new(0.08,0,0,rowH-6)
+        speedDown.Position = UDim2.new(0.63,0,0,yOffset+rowH*3+26)
+        speedDown.BackgroundColor3 = C.btn
+        speedDown.Text = "-1"
+        speedDown.TextColor3 = C.white
+        speedDown.Font = Enum.Font.GothamBold
+        speedDown.TextSize = 9
+        Instance.new("UICorner", speedDown).CornerRadius = UDim.new(0,4)
+        
+        local speedUp = Instance.new("TextButton", pg)
+        speedUp.Size = UDim2.new(0.08,0,0,rowH-6)
+        speedUp.Position = UDim2.new(0.73,0,0,yOffset+rowH*3+26)
+        speedUp.BackgroundColor3 = C.btn
+        speedUp.Text = "+1"
+        speedUp.TextColor3 = C.white
+        speedUp.Font = Enum.Font.GothamBold
+        speedUp.TextSize = 9
+        Instance.new("UICorner", speedUp).CornerRadius = UDim.new(0,4)
+        
+        -- NOCLIP ЛОГИКА
         local noclipActive = false
         local noclipConnection = nil
         
         local function toggleNoclip()
             noclipActive = not noclipActive
             if noclipActive then
-                noclipBtn.Text = "🚪NOCLIP:ВКЛ"
+                noclipBtn.Text = "🚪 NOCLIP: ВКЛ"
                 noclipBtn.TextColor3 = Color3.fromRGB(100,255,100)
                 noclipConnection = game:GetService("RunService").Stepped:Connect(function()
                     local char = game.Players.LocalPlayer.Character
@@ -128,7 +180,7 @@ return {
                     end
                 end)
             else
-                noclipBtn.Text = "🚪NOCLIP:ВЫКЛ"
+                noclipBtn.Text = "🚪 NOCLIP: ВЫКЛ"
                 noclipBtn.TextColor3 = Color3.fromRGB(255,100,100)
                 if noclipConnection then
                     noclipConnection:Disconnect()
@@ -147,59 +199,115 @@ return {
         
         noclipBtn.MouseButton1Click:Connect(toggleNoclip)
         
-        -- ===== FLY (компактно в одну строку) =====
-        local flyBtn = Instance.new("TextButton", pg)
-        flyBtn.Size = UDim2.new(0.32,0,0,rowH)
-        flyBtn.Position = UDim2.new(0.5,0,0,yOffset+rowH*2+12)
-        flyBtn.BackgroundColor3 = C.btn
-        flyBtn.Text = "🕊ВЫКЛ"
-        flyBtn.TextColor3 = Color3.fromRGB(255,100,100)
-        flyBtn.Font = Enum.Font.GothamBold
-        flyBtn.TextSize = 10
-        Instance.new("UICorner", flyBtn).CornerRadius = UDim.new(0,5)
-        
-        local flySpeed = 1
+        -- ===== FLY ЛОГИКА (С АНИМАЦИЕЙ И ПЛАВАЮЩЕЙ КНОПКОЙ) =====
+        local flySpeed = 5
         local flyActive = false
-        local bodyVelocity = nil
-        local bodyGyro = nil
+        local bv = nil
+        local bg = nil
         local flyConnection = nil
+        local animTrack = nil
+        local animator = nil
+        local isBoosting = false
         
-        local speedDown = Instance.new("TextButton", pg)
-        speedDown.Size = UDim2.new(0.07,0,0,rowH)
-        speedDown.Position = UDim2.new(0.83,0,0,yOffset+rowH*2+12)
-        speedDown.BackgroundColor3 = C.btn
-        speedDown.Text = "-5"
-        speedDown.TextColor3 = C.white
-        speedDown.Font = Enum.Font.GothamBold
-        speedDown.TextSize = 10
-        Instance.new("UICorner", speedDown).CornerRadius = UDim.new(0,4)
+        -- ПЛАВАЮЩАЯ КНОПКА УСКОРЕНИЯ
+        local screenGui = Instance.new("ScreenGui")
+        screenGui.Name = "FlyBoostButton"
+        screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+        screenGui.Enabled = false
         
-        local speedValue = Instance.new("TextLabel", pg)
-        speedValue.Size = UDim2.new(0.07,0,0,rowH)
-        speedValue.Position = UDim2.new(0.91,0,0,yOffset+rowH*2+12)
-        speedValue.BackgroundColor3 = C.side
-        speedValue.Text = "1"
-        speedValue.TextColor3 = C.white
-        speedValue.Font = Enum.Font.GothamBold
-        speedValue.TextSize = 10
-        Instance.new("UICorner", speedValue).CornerRadius = UDim.new(0,4)
+        local boostButton = Instance.new("ImageButton", screenGui)
+        boostButton.Size = UDim2.new(0, 70, 0, 70)
+        boostButton.Position = UDim2.new(0.85, -35, 0.85, -35)
+        boostButton.BackgroundColor3 = Color3.fromRGB(255, 200, 50)
+        boostButton.BackgroundTransparency = 0.3
+        boostButton.Image = "rbxassetid://5103523552"
+        boostButton.ImageColor3 = Color3.fromRGB(255, 255, 255)
+        Instance.new("UICorner", boostButton).CornerRadius = UDim.new(1, 0)
+        boostButton.Visible = false
         
-        local speedUp = Instance.new("TextButton", pg)
-        speedUp.Size = UDim2.new(0.07,0,0,rowH)
-        speedUp.Position = UDim2.new(0.99,0,-speedUp.Size.X.Offset,0,yOffset+rowH*2+12)
-        speedUp.BackgroundColor3 = C.btn
-        speedUp.Text = "+5"
-        speedUp.TextColor3 = C.white
-        speedUp.Font = Enum.Font.GothamBold
-        speedUp.TextSize = 10
-        Instance.new("UICorner", speedUp).CornerRadius = UDim.new(0,4)
+        local boostText = Instance.new("TextLabel", boostButton)
+        boostText.Size = UDim2.new(1, 0, 0.3, 0)
+        boostText.Position = UDim2.new(0, 0, 0.7, 0)
+        boostText.BackgroundTransparency = 1
+        boostText.Text = "BOOST"
+        boostText.TextColor3 = Color3.fromRGB(255, 255, 255)
+        boostText.Font = Enum.Font.GothamBold
+        boostText.TextSize = 10
         
+        -- ПЕРЕТАСКИВАНИЕ
+        local dragging = false
+        local dragStart = nil
+        local startPos = nil
+        
+        boostButton.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.Touch then
+                dragging = true
+                dragStart = input.Position
+                startPos = boostButton.Position
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                    end
+                end)
+            end
+        end)
+        
+        game:GetService("UserInputService").TouchMoved:Connect(function(input)
+            if dragging and input.UserInputType == Enum.UserInputType.Touch then
+                local delta = input.Position - dragStart
+                local newX = startPos.X.Scale + (delta.X / screenGui.AbsoluteSize.X)
+                local newY = startPos.Y.Scale + (delta.Y / screenGui.AbsoluteSize.Y)
+                boostButton.Position = UDim2.new(newX, 0, newY, 0)
+            end
+        end)
+        
+        boostButton.MouseButton1Down:Connect(function()
+            isBoosting = true
+            boostButton.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
+        end)
+        
+        boostButton.MouseButton1Up:Connect(function()
+            isBoosting = false
+            boostButton.BackgroundColor3 = Color3.fromRGB(255, 200, 50)
+        end)
+        
+        game:GetService("UserInputService").TouchEnded:Connect(function()
+            isBoosting = false
+            boostButton.BackgroundColor3 = Color3.fromRGB(255, 200, 50)
+        end)
+        
+        -- АНИМАЦИЯ
+        local function playFlyAnimation(char)
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if not hum then return end
+            animator = hum:FindFirstChildOfClass("Animator")
+            if not animator then
+                animator = Instance.new("Animator", hum)
+            end
+            local anim = Instance.new("Animation")
+            anim.AnimationId = "rbxassetid://10854225007"
+            animTrack = animator:LoadAnimation(anim)
+            if animTrack then
+                animTrack:Play()
+                animTrack:AdjustSpeed(1)
+            end
+        end
+        
+        local function stopFlyAnimation()
+            if animTrack then
+                animTrack:Stop()
+                animTrack = nil
+            end
+        end
+        
+        -- ОСТАНОВКА
         local function stopFly()
             local player = game.Players.LocalPlayer
             local char = player and player.Character
-            if bodyVelocity then bodyVelocity:Destroy() bodyVelocity = nil end
-            if bodyGyro then bodyGyro:Destroy() bodyGyro = nil end
+            if bv then bv:Destroy() bv = nil end
+            if bg then bg:Destroy() bg = nil end
             if flyConnection then flyConnection:Disconnect() flyConnection = nil end
+            stopFlyAnimation()
             if char then
                 local hum = char:FindFirstChildOfClass("Humanoid")
                 if hum then
@@ -209,8 +317,10 @@ return {
                 local root = char:FindFirstChild("HumanoidRootPart")
                 if root then root.Velocity = Vector3.zero end
             end
+            screenGui.Enabled = false
         end
         
+        -- ЗАПУСК
         local function startFly()
             local player = game.Players.LocalPlayer
             local char = player.Character
@@ -219,29 +329,36 @@ return {
             local root = char:FindFirstChild("HumanoidRootPart")
             if not hum or not root then return end
             
+            playFlyAnimation(char)
             hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
             hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
             
-            bodyGyro = Instance.new("BodyGyro", root)
-            bodyGyro.P = 1e5
-            bodyGyro.MaxTorque = Vector3.new(1,1,1) * 1e6
-            bodyGyro.CFrame = root.CFrame
+            bg = Instance.new("BodyGyro", root)
+            bg.P = 1e5
+            bg.MaxTorque = Vector3.new(1,1,1) * 1e6
+            bg.CFrame = root.CFrame
             
-            bodyVelocity = Instance.new("BodyVelocity", root)
-            bodyVelocity.P = 1e5
-            bodyVelocity.MaxForce = Vector3.new(1,1,1) * 1e6
-            bodyVelocity.Velocity = Vector3.zero
+            bv = Instance.new("BodyVelocity", root)
+            bv.P = 1e5
+            bv.MaxForce = Vector3.new(1,1,1) * 1e6
+            bv.Velocity = Vector3.zero
+            
+            screenGui.Enabled = true
+            boostButton.Visible = true
             
             flyConnection = game:GetService("RunService").RenderStepped:Connect(function()
                 if not flyActive then return end
-                local c = player.Character
-                if not c or not c.PrimaryPart then stopFly() return end
+                if not char or not char.Parent then return end
                 local moveDir = game:GetService("UserInputService"):GetMoveDirection()
                 local cam = workspace.CurrentCamera
-                local moveVector = (cam.CFrame.LookVector * moveDir.Z + cam.CFrame.RightVector * moveDir.X) * (flySpeed * 8)
-                if bodyVelocity then bodyVelocity.Velocity = moveVector end
-                if bodyGyro and moveVector.Magnitude > 0.1 then
-                    bodyGyro.CFrame = CFrame.new(root.Position, root.Position + moveVector.Unit)
+                local currentSpeed = flySpeed
+                if isBoosting then currentSpeed = flySpeed * 3 end
+                local forward = cam.CFrame.LookVector * moveDir.Z
+                local right = cam.CFrame.RightVector * moveDir.X
+                local moveVector = (forward + right) * (currentSpeed * 10)
+                if bv then bv.Velocity = moveVector end
+                if bg and moveVector.Magnitude > 0.1 then
+                    bg.CFrame = CFrame.new(root.Position, root.Position + moveVector.Unit)
                 end
             end)
         end
@@ -249,11 +366,11 @@ return {
         local function toggleFly()
             flyActive = not flyActive
             if flyActive then
-                flyBtn.Text = "🕊ВКЛ"
+                flyBtn.Text = "🕊 FLY: ВКЛ"
                 flyBtn.TextColor3 = Color3.fromRGB(100,255,100)
                 startFly()
             else
-                flyBtn.Text = "🕊ВЫКЛ"
+                flyBtn.Text = "🕊 FLY: ВЫКЛ"
                 flyBtn.TextColor3 = Color3.fromRGB(255,100,100)
                 stopFly()
             end
@@ -261,140 +378,14 @@ return {
         
         flyBtn.MouseButton1Click:Connect(toggleFly)
         
-        -- ===== FLING (компактно в одну строку) =====
-        local flingBtn = Instance.new("TextButton", pg)
-        flingBtn.Size = UDim2.new(0.32,0,0,rowH)
-        flingBtn.Position = UDim2.new(0.5,0,0,yOffset+rowH*3+20)
-        flingBtn.BackgroundColor3 = C.btn
-        flingBtn.Text = "💫ВЫКЛ"
-        flingBtn.TextColor3 = Color3.fromRGB(255,100,100)
-        flingBtn.Font = Enum.Font.GothamBold
-        flingBtn.TextSize = 10
-        Instance.new("UICorner", flingBtn).CornerRadius = UDim.new(0,5)
-        
-        local flingPower = 5000
-        local flingActive = false
-        local flingConnection = nil
-        local originalMaterials = {}
-        local spinConnection = nil
-        
-        local flingDown = Instance.new("TextButton", pg)
-        flingDown.Size = UDim2.new(0.07,0,0,rowH)
-        flingDown.Position = UDim2.new(0.83,0,0,yOffset+rowH*3+20)
-        flingDown.BackgroundColor3 = C.btn
-        flingDown.Text = "-500"
-        flingDown.TextColor3 = C.white
-        flingDown.Font = Enum.Font.GothamBold
-        flingDown.TextSize = 9
-        Instance.new("UICorner", flingDown).CornerRadius = UDim.new(0,4)
-        
-        local flingValue = Instance.new("TextLabel", pg)
-        flingValue.Size = UDim2.new(0.07,0,0,rowH)
-        flingValue.Position = UDim2.new(0.91,0,0,yOffset+rowH*3+20)
-        flingValue.BackgroundColor3 = C.side
-        flingValue.Text = "5000"
-        flingValue.TextColor3 = C.white
-        flingValue.Font = Enum.Font.GothamBold
-        flingValue.TextSize = 9
-        Instance.new("UICorner", flingValue).CornerRadius = UDim.new(0,4)
-        
-        local flingUp = Instance.new("TextButton", pg)
-        flingUp.Size = UDim2.new(0.07,0,0,rowH)
-        flingUp.Position = UDim2.new(0.99,0,-flingUp.Size.X.Offset,0,yOffset+rowH*3+20)
-        flingUp.BackgroundColor3 = C.btn
-        flingUp.Text = "+500"
-        flingUp.TextColor3 = C.white
-        flingUp.Font = Enum.Font.GothamBold
-        flingUp.TextSize = 9
-        Instance.new("UICorner", flingUp).CornerRadius = UDim.new(0,4)
-        
-        local function stopFling()
-            local player = game.Players.LocalPlayer
-            local char = player and player.Character
-            if spinConnection then spinConnection:Disconnect() spinConnection = nil end
-            if flingConnection then flingConnection:Disconnect() flingConnection = nil end
-            for part, mat in pairs(originalMaterials) do
-                if part and part.Parent then part.Material = mat end
-            end
-            originalMaterials = {}
-            if char then
-                local hum = char:FindFirstChildOfClass("Humanoid")
-                if hum then
-                    hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
-                    hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
-                end
-                local root = char:FindFirstChild("HumanoidRootPart")
-                if root then root.Velocity = Vector3.zero end
-            end
-        end
-        
-        local function startFling()
-            local player = game.Players.LocalPlayer
-            local char = player.Character
-            if not char then return end
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            local root = char:FindFirstChild("HumanoidRootPart")
-            if not hum or not root then return end
-            
-            for _, part in pairs(char:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    originalMaterials[part] = part.Material
-                    part.Material = Enum.Material.ForceField
-                    part.Color = Color3.fromRGB(255,255,255)
-                end
-            end
-            
-            hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
-            hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
-            
-            local spinSpeed = 50
-            spinConnection = game:GetService("RunService").Heartbeat:Connect(function()
-                if not flingActive or not root or not root.Parent then return end
-                local rot = root.CFrame - root.Position
-                root.CFrame = CFrame.new(root.Position) * rot * CFrame.Angles(spinSpeed, spinSpeed, spinSpeed)
-                spinSpeed = spinSpeed + 0.5
-            end)
-            
-            flingConnection = game:GetService("RunService").Heartbeat:Connect(function()
-                if not flingActive or not root or not root.Parent then return end
-                local cam = workspace.CurrentCamera
-                root.Velocity = cam.CFrame.LookVector * flingPower
-                root:SetNetworkOwner(nil)
-            end)
-        end
-        
-        local function toggleFling()
-            flingActive = not flingActive
-            if flingActive then
-                flingBtn.Text = "💫ВКЛ"
-                flingBtn.TextColor3 = Color3.fromRGB(100,255,100)
-                startFling()
-            else
-                flingBtn.Text = "💫ВЫКЛ"
-                flingBtn.TextColor3 = Color3.fromRGB(255,100,100)
-                stopFling()
-            end
-        end
-        
-        flingBtn.MouseButton1Click:Connect(toggleFling)
-        
-        -- ОБРАБОТЧИКИ СКОРОСТЕЙ
+        -- РЕГУЛИРОВКА СКОРОСТИ
         speedDown.MouseButton1Click:Connect(function()
-            flySpeed = math.max(1, flySpeed - 5)
+            flySpeed = math.max(1, flySpeed - 1)
             speedValue.Text = tostring(flySpeed)
         end)
         speedUp.MouseButton1Click:Connect(function()
-            flySpeed = math.min(50, flySpeed + 5)
+            flySpeed = math.min(20, flySpeed + 1)
             speedValue.Text = tostring(flySpeed)
-        end)
-        
-        flingDown.MouseButton1Click:Connect(function()
-            flingPower = math.max(1000, flingPower - 500)
-            flingValue.Text = tostring(flingPower)
-        end)
-        flingUp.MouseButton1Click:Connect(function()
-            flingPower = math.min(50000, flingPower + 500)
-            flingValue.Text = tostring(flingPower)
         end)
         
         -- ОБРАБОТЧИКИ МОЛОТА
@@ -419,10 +410,15 @@ return {
             pValue.Text = tostring(v)
         end)
         
-        -- Очистка при телепорте
+        -- ОЧИСТКА
         game.Players.LocalPlayer.OnTeleport:Connect(function()
             if flyActive then toggleFly() end
-            if flingActive then toggleFling() end
+        end)
+        game.Players.LocalPlayer.CharacterAdded:Connect(function()
+            if flyActive then
+                wait(0.5)
+                startFly()
+            end
         end)
     end
 }
