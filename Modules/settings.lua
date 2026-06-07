@@ -2,15 +2,60 @@ return {
     start = function(GUI)
         local C = GUI.colors
         local pg = GUI.settings
-        local plr = game.Players.LocalPlayer
         
         local st = Instance.new("TextLabel", pg)
         st.Size = UDim2.new(1,0,0,18) st.BackgroundTransparency = 1
         st.Text = "⚙️ НАСТРОЙКИ" st.TextColor3 = C.gold st.Font = Enum.Font.GothamBold st.TextSize = 12 st.TextXAlignment = Enum.TextXAlignment.Center
         
+        -- Скорость молота (высота)
+        local heightLabel = Instance.new("TextLabel", pg)
+        heightLabel.Size = UDim2.new(1,0,0,16) heightLabel.Position = UDim2.new(0,0,0,22) heightLabel.BackgroundTransparency = 1
+        heightLabel.Text = "📏 Высота подъёма: 200" heightLabel.TextColor3 = C.white heightLabel.Font = Enum.Font.GothamBold heightLabel.TextSize = 11 heightLabel.TextXAlignment = Enum.TextXAlignment.Left
+        
+        local hammerHeight = 200
+        local heightBtn = Instance.new("TextButton", pg)
+        heightBtn.Size = UDim2.new(1,0,0,26) heightBtn.Position = UDim2.new(0,0,0,40)
+        heightBtn.BackgroundColor3 = C.btn heightBtn.Text = "ИЗМЕНИТЬ (100-500)" heightBtn.TextColor3 = C.white heightBtn.Font = Enum.Font.GothamBold heightBtn.TextSize = 11 heightBtn.BorderSizePixel = 0
+        Instance.new("UICorner", heightBtn).CornerRadius = UDim.new(0,4)
+        Instance.new("UIStroke", heightBtn).Thickness = 1.5 Instance.new("UIStroke", heightBtn).Color = C.purple
+        
+        local heights = {100, 200, 300, 400, 500}
+        local hi = 2
+        
+        heightBtn.MouseButton1Click:Connect(function()
+            hi = hi % #heights + 1
+            hammerHeight = heights[hi]
+            heightLabel.Text = "📏 Высота подъёма: " .. hammerHeight
+            GUI.hammerHeight = hammerHeight
+        end)
+        GUI.hammerHeight = hammerHeight
+        
+        -- Скорость молота (сила удара)
+        local speedLabel = Instance.new("TextLabel", pg)
+        speedLabel.Size = UDim2.new(1,0,0,16) speedLabel.Position = UDim2.new(0,0,0,74) speedLabel.BackgroundTransparency = 1
+        speedLabel.Text = "⚡ Сила удара: 1500" speedLabel.TextColor3 = C.white speedLabel.Font = Enum.Font.GothamBold speedLabel.TextSize = 11 speedLabel.TextXAlignment = Enum.TextXAlignment.Left
+        
+        local hammerSpeed = 1500
+        local speedBtn = Instance.new("TextButton", pg)
+        speedBtn.Size = UDim2.new(1,0,0,26) speedBtn.Position = UDim2.new(0,0,0,92)
+        speedBtn.BackgroundColor3 = C.btn speedBtn.Text = "ИЗМЕНИТЬ (500-3000)" speedBtn.TextColor3 = C.white speedBtn.Font = Enum.Font.GothamBold speedBtn.TextSize = 11 speedBtn.BorderSizePixel = 0
+        Instance.new("UICorner", speedBtn).CornerRadius = UDim.new(0,4)
+        Instance.new("UIStroke", speedBtn).Thickness = 1.5 Instance.new("UIStroke", speedBtn).Color = C.purple
+        
+        local speeds = {500, 1000, 1500, 2000, 2500, 3000}
+        local si = 3
+        
+        speedBtn.MouseButton1Click:Connect(function()
+            si = si % #speeds + 1
+            hammerSpeed = speeds[si]
+            speedLabel.Text = "⚡ Сила удара: " .. hammerSpeed
+            GUI.hammerSpeed = hammerSpeed
+        end)
+        GUI.hammerSpeed = hammerSpeed
+        
         -- Смена темы
         local tt = Instance.new("TextLabel", pg)
-        tt.Size = UDim2.new(1,0,0,16) tt.Position = UDim2.new(0,0,0,24) tt.BackgroundTransparency = 1
+        tt.Size = UDim2.new(1,0,0,16) tt.Position = UDim2.new(0,0,0,126) tt.BackgroundTransparency = 1
         tt.Text = "🎨 Тема: Неон" tt.TextColor3 = C.white tt.Font = Enum.Font.GothamBold tt.TextSize = 11 tt.TextXAlignment = Enum.TextXAlignment.Left
         
         local themes = {
@@ -19,7 +64,7 @@ return {
         local ti = 1
         
         local tb = Instance.new("TextButton", pg)
-        tb.Size = UDim2.new(1,0,0,26) tb.Position = UDim2.new(0,0,0,42)
+        tb.Size = UDim2.new(1,0,0,26) tb.Position = UDim2.new(0,0,0,144)
         tb.BackgroundColor3 = C.btn tb.Text = "СМЕНИТЬ ТЕМУ" tb.TextColor3 = C.white tb.Font = Enum.Font.GothamBold tb.TextSize = 11 tb.BorderSizePixel = 0
         Instance.new("UICorner", tb).CornerRadius = UDim.new(0,4)
         Instance.new("UIStroke", tb).Thickness = 1.5 Instance.new("UIStroke", tb).Color = C.purple
@@ -30,63 +75,9 @@ return {
             tt.Text = "🎨 Тема: " .. themes[ti].name
         end)
         
-        -- Скрыть кнопки игры
-        local gameUIHidden = false
-        local hideConnection = nil
-        
-        local uiLabel = Instance.new("TextLabel", pg)
-        uiLabel.Size = UDim2.new(1,0,0,16) uiLabel.Position = UDim2.new(0,0,0,76) uiLabel.BackgroundTransparency = 1
-        uiLabel.Text = "👁️ Кнопки игры: ВИДНЫ" uiLabel.TextColor3 = C.white uiLabel.Font = Enum.Font.GothamBold uiLabel.TextSize = 11 uiLabel.TextXAlignment = Enum.TextXAlignment.Left
-        
-        local uiBtn = Instance.new("TextButton", pg)
-        uiBtn.Size = UDim2.new(1,0,0,26) uiBtn.Position = UDim2.new(0,0,0,94)
-        uiBtn.BackgroundColor3 = C.btn uiBtn.Text = "СКРЫТЬ КНОПКИ ИГРЫ" uiBtn.TextColor3 = C.white uiBtn.Font = Enum.Font.GothamBold uiBtn.TextSize = 11 uiBtn.BorderSizePixel = 0
-        Instance.new("UICorner", uiBtn).CornerRadius = UDim.new(0,4)
-        Instance.new("UIStroke", uiBtn).Thickness = 1.5 Instance.new("UIStroke", uiBtn).Color = C.purple
-        
-        local function hideAllButtons()
-            local pg = plr:WaitForChild("PlayerGui")
-            for _, gui in pairs(pg:GetChildren()) do
-                if gui:IsA("ScreenGui") and gui.Name ~= "DamirHub" and gui.Name ~= "DamirMini" then
-                    for _, obj in pairs(gui:GetDescendants()) do
-                        if (obj:IsA("TextButton") or obj:IsA("ImageButton")) and obj.Visible then
-                            obj.Visible = false
-                        end
-                    end
-                end
-            end
-        end
-        
-        uiBtn.MouseButton1Click:Connect(function()
-            gameUIHidden = not gameUIHidden
-            if gameUIHidden then
-                hideAllButtons()
-                uiLabel.Text = "👁️ Кнопки игры: СКРЫТЫ"
-                uiBtn.Text = "ПОКАЗАТЬ КНОПКИ"
-                -- Повторяем скрытие каждые 2 секунды (для новых кнопок после краша)
-                hideConnection = game:GetService("RunService").Heartbeat:Connect(function()
-                    -- используем счётчик чтобы не каждый кадр
-                end)
-                spawn(function()
-                    while gameUIHidden do
-                        wait(2)
-                        hideAllButtons()
-                    end
-                end)
-            else
-                if hideConnection then hideConnection:Disconnect() end
-                uiLabel.Text = "👁️ Кнопки игры: ВИДНЫ"
-                uiBtn.Text = "СКРЫТЬ КНОПКИ ИГРЫ"
-            end
-        end)
-        
-        local hintLabel = Instance.new("TextLabel", pg)
-        hintLabel.Size = UDim2.new(1,0,0,20) hintLabel.Position = UDim2.new(0,0,0,130) hintLabel.BackgroundTransparency = 1
-        hintLabel.Text = "💡 Автофарм работает\nдаже при скрытых кнопках" hintLabel.TextColor3 = Color3.fromRGB(255,180,50) hintLabel.Font = Enum.Font.Gotham hintLabel.TextSize = 9 hintLabel.TextXAlignment = Enum.TextXAlignment.Center
-        
         -- Автор
         local authorLabel = Instance.new("TextLabel", pg)
-        authorLabel.Size = UDim2.new(1,0,0,14) authorLabel.Position = UDim2.new(0,0,0,160) authorLabel.BackgroundTransparency = 1
+        authorLabel.Size = UDim2.new(1,0,0,14) authorLabel.Position = UDim2.new(0,0,0,180) authorLabel.BackgroundTransparency = 1
         authorLabel.Text = "by Damir_drun67" authorLabel.TextColor3 = Color3.fromRGB(120,120,140) authorLabel.Font = Enum.Font.Gotham authorLabel.TextSize = 9 authorLabel.TextXAlignment = Enum.TextXAlignment.Center
     end
 }
