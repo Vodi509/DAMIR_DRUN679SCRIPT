@@ -30,7 +30,7 @@ return {
             tt.Text = "🎨 Тема: " .. themes[ti].name
         end)
         
-        -- Скрыть кнопки игры (но автофарм работает)
+        -- Скрыть кнопки игры
         local gameUIHidden = false
         local savedStates = {}
         
@@ -84,7 +84,12 @@ return {
         end)
         
         local hintLabel = Instance.new("TextLabel", pg)
-        hintLabel.Size = UDim2.new(1,0,0,30) hintLabel.Position = UDim2.new(0,0,0,130) hintLabel.BackgroundTransparency = 1
-        hintLabel.Text = "💡 Автофарм работает\nдаже при скрытых кнопках" hintLabel.TextColor3 = Color3.fromRGB(255,180,50) hintLabel.Font = Enum.Font.Gotham hintLabel.TextSize = 10 hintLabel.TextXAlignment = Enum.TextXAlignment.Center
+        hintLabel.Size = UDim2.new(1,0,0,20) hintLabel.Position = UDim2.new(0,0,0,130) hintLabel.BackgroundTransparency = 1
+        hintLabel.Text = "💡 Автофарм работает\nдаже при скрытых кнопках" hintLabel.TextColor3 = Color3.fromRGB(255,180,50) hintLabel.Font = Enum.Font.Gotham hintLabel.TextSize = 9 hintLabel.TextXAlignment = Enum.TextXAlignment.Center
+        
+        -- Автор
+        local authorLabel = Instance.new("TextLabel", pg)
+        authorLabel.Size = UDim2.new(1,0,0,14) authorLabel.Position = UDim2.new(0,0,0,160) authorLabel.BackgroundTransparency = 1
+        authorLabel.Text = "by Damir_drun67" authorLabel.TextColor3 = Color3.fromRGB(120,120,140) authorLabel.Font = Enum.Font.Gotham authorLabel.TextSize = 9 authorLabel.TextXAlignment = Enum.TextXAlignment.Center
     end
 }
