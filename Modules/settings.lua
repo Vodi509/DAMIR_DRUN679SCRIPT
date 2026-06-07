@@ -188,10 +188,10 @@ return {
         
         noclipBtn.MouseButton1Click:Connect(toggleNoclip)
         
-        -- ===== FLY (ПО НАПРАВЛЕНИЮ КАМЕРЫ) =====
+        -- ===== FLY (ИЗ INFINITY YIELD + РЕГУЛИРОВКА СКОРОСТИ) =====
         local flyBtn = Instance.new("TextButton", pg)
         flyBtn.Size = UDim2.new(0.45,0,0,rowH)
-        flyBtn.Position = UDim2.new(0.52,0,0,yOffset+rowH*3+12)
+        flyBtn.Position = UDim2.new(0.27,0,0,yOffset+rowH*3+12)
         flyBtn.BackgroundColor3 = C.btn
         flyBtn.Text = "🕊 FLY: ВЫКЛ"
         flyBtn.TextColor3 = Color3.fromRGB(255,100,100)
@@ -199,82 +199,129 @@ return {
         flyBtn.TextSize = 11
         Instance.new("UICorner", flyBtn).CornerRadius = UDim.new(0,4)
         
+        -- Регулировка скорости полёта
+        local speedValue = Instance.new("TextLabel", pg)
+        speedValue.Size = UDim2.new(0.2,0,0,rowH)
+        speedValue.Position = UDim2.new(0.74,0,0,yOffset+rowH*3+12)
+        speedValue.BackgroundColor3 = C.side
+        speedValue.Text = "Скорость: 1"
+        speedValue.TextColor3 = C.white
+        speedValue.Font = Enum.Font.GothamBold
+        speedValue.TextSize = 10
+        Instance.new("UICorner", speedValue).CornerRadius = UDim.new(0,4)
+        
+        local speedDown = Instance.new("TextButton", pg)
+        speedDown.Size = UDim2.new(0.1,0,0,rowH)
+        speedDown.Position = UDim2.new(0.2,0,0,yOffset+rowH*3+12)
+        speedDown.BackgroundColor3 = C.btn
+        speedDown.Text = "-10"
+        speedDown.TextColor3 = C.white
+        speedDown.Font = Enum.Font.GothamBold
+        speedDown.TextSize = 10
+        Instance.new("UICorner", speedDown).CornerRadius = UDim.new(0,4)
+        
+        local speedUp = Instance.new("TextButton", pg)
+        speedUp.Size = UDim2.new(0.1,0,0,rowH)
+        speedUp.Position = UDim2.new(0.96,0,0,yOffset+rowH*3+12)
+        speedUp.BackgroundColor3 = C.btn
+        speedUp.Text = "+10"
+        speedUp.TextColor3 = C.white
+        speedUp.Font = Enum.Font.GothamBold
+        speedUp.TextSize = 10
+        Instance.new("UICorner", speedUp).CornerRadius = UDim.new(0,4)
+        
+        local flySpeed = 1  -- стандартная скорость (1-100)
+        
+        speedDown.MouseButton1Click:Connect(function()
+            flySpeed = math.max(1, flySpeed - 10)
+            speedValue.Text = "Скорость: " .. flySpeed
+        end)
+        
+        speedUp.MouseButton1Click:Connect(function()
+            flySpeed = math.min(100, flySpeed + 10)
+            speedValue.Text = "Скорость: " .. flySpeed
+        end)
+        
         local flyActive = false
-        local bodyVelocity = nil
         local bg = nil
+        local bv = nil
         local flyConnection = nil
         
         local function toggleFly()
             flyActive = not flyActive
-            local char = game.Players.LocalPlayer.Character
-            local hum = char and char:FindFirstChildOfClass("Humanoid")
+            local player = game.Players.LocalPlayer
+            local char = player.Character
             
             if flyActive then
                 flyBtn.Text = "🕊 FLY: ВКЛ"
                 flyBtn.TextColor3 = Color3.fromRGB(100,255,100)
                 
-                if char and hum then
-                    hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
-                    hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+                if not char then return end
+                local hum = char:FindFirstChild("Humanoid")
+                local rootPart = char:FindFirstChild("HumanoidRootPart")
+                
+                if not hum or not rootPart then return end
+                
+                hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+                rootPart.Anchored = false
+                
+                bg = Instance.new("BodyGyro", rootPart)
+                bg.P = 1e4
+                bg.MaxTorque = Vector3.new(1,1,1)*1e6
+                bg.CFrame = rootPart.CFrame
+                
+                bv = Instance.new("BodyVelocity", rootPart)
+                bv.P = 1e4
+                bv.MaxForce = Vector3.new(1,1,1)*1e6
+                bv.Velocity = Vector3.zero
+                
+                if flyConnection then flyConnection:Disconnect() end
+                flyConnection = game:GetService("RunService").RenderStepped:Connect(function()
+                    if not flyActive then return end
+                    local p = game.Players.LocalPlayer
+                    local c = p.Character
+                    if not c or not c.PrimaryPart then return end
                     
-                    bg = Instance.new("BodyGyro", char.PrimaryPart)
-                    bg.P = 10000
-                    bg.MaxTorque = Vector3.new(1,1,1)*1e6
+                    local moveDir = game:GetService("UserInputService"):GetMoveDirection()
+                    local cam = workspace.CurrentCamera
                     
-                    bodyVelocity = Instance.new("BodyVelocity", char.PrimaryPart)
-                    bodyVelocity.P = 5000
-                    bodyVelocity.MaxForce = Vector3.new(1,1,1)*1e6
-                    bodyVelocity.Velocity = Vector3.zero
+                    local forwardStrength = moveDir.Z
+                    local rightStrength = moveDir.X
                     
-                    if flyConnection then flyConnection:Disconnect() end
-                    flyConnection = game:GetService("RunService").RenderStepped:Connect(function()
-                        if not flyActive or not char or not char.PrimaryPart then
-                            return
-                        end
-                        
-                        -- Берём направление камеры
-                        local cam = workspace.CurrentCamera
-                        local camLook = cam.CFrame.LookVector
-                        
-                        -- Джойстик даёт силу и горизонтальное направление
-                        local moveDir = game:GetService("UserInputService"):GetMoveDirection()
-                        local forwardStrength = moveDir.Z  -- вперёд/назад (на телефоне вверх/вниз по джойстику)
-                        local rightStrength = moveDir.X   -- влево/вправо
-                        
-                        -- Считаем направление полёта:
-                        -- Вперёд/назад по направлению камеры (с учётом её наклона)
-                        -- Влево/вправо перпендикулярно камере
-                        local forward = cam.CFrame.LookVector * forwardStrength
-                        local right = cam.CFrame.RightVector * rightStrength
-                        
-                        -- Итоговое движение
-                        local moveVelocity = (forward + right) * 60
-                        
-                        -- Поворачиваем персонажа в сторону движения (если есть)
-                        if moveVelocity.Magnitude > 0.1 then
-                            bg.CFrame = CFrame.new(char.PrimaryPart.Position, char.PrimaryPart.Position + moveVelocity.Unit)
-                        end
-                        
-                        bodyVelocity.Velocity = moveVelocity
-                    end)
+                    local forward = cam.CFrame.LookVector * forwardStrength
+                    local right = cam.CFrame.RightVector * rightStrength
                     
-                    char.PrimaryPart.Anchored = false
-                end
+                    -- Используем flySpeed (умножаем на 8, чтобы 1 давала комфортную скорость)
+                    local moveVelocity = (forward + right) * (flySpeed * 8)
+                    
+                    if moveVelocity.Magnitude > 0.1 then
+                        bg.CFrame = CFrame.new(c.PrimaryPart.Position, c.PrimaryPart.Position + moveVelocity.Unit)
+                    end
+                    
+                    bv.Velocity = moveVelocity
+                end)
+                
             else
                 flyBtn.Text = "🕊 FLY: ВЫКЛ"
                 flyBtn.TextColor3 = Color3.fromRGB(255,100,100)
                 
                 if bg then bg:Destroy() bg = nil end
-                if bodyVelocity then bodyVelocity:Destroy() bodyVelocity = nil end
+                if bv then bv:Destroy() bv = nil end
                 if flyConnection then flyConnection:Disconnect() flyConnection = nil end
                 
-                if char and hum then
-                    hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
-                    hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
-                    local root = char:FindFirstChild("HumanoidRootPart")
-                    if root then
-                        root.Velocity = Vector3.zero
-                        root:SetNetworkOwner(nil)
+                local player = game.Players.LocalPlayer
+                local char = player.Character
+                if char then
+                    local hum = char:FindFirstChild("Humanoid")
+                    if hum then
+                        hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
+                        hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
+                    end
+                    local rootPart = char:FindFirstChild("HumanoidRootPart")
+                    if rootPart then
+                        rootPart.Velocity = Vector3.zero
+                        rootPart:SetNetworkOwner(nil)
                     end
                 end
             end
