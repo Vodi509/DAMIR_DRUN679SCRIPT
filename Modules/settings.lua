@@ -39,16 +39,21 @@ return {
         end)
         
         local themes = {
-            {name = "Неон", bg = Color3.fromRGB(10,10,20)},
-            {name = "Закат", bg = Color3.fromRGB(25,10,10)},
-            {name = "Фиолет", bg = Color3.fromRGB(15,5,25)},
-            {name = "Океан", bg = Color3.fromRGB(5,15,25)},
-            {name = "Лес", bg = Color3.fromRGB(5,20,10)},
-            {name = "Золото", bg = Color3.fromRGB(20,18,5)},
-            {name = "Космос", bg = Color3.fromRGB(5,5,15)},
-            {name = "Розовый", bg = Color3.fromRGB(25,10,20)},
-            {name = "Красный", bg = Color3.fromRGB(30,10,10)},
-            {name = "Лайм", bg = Color3.fromRGB(10,25,10)}
+            {name = "Неон", bg = Color3.fromRGB(10,10,35)},
+            {name = "Закат", bg = Color3.fromRGB(40,15,5)},
+            {name = "Фиолет", bg = Color3.fromRGB(30,10,50)},
+            {name = "Океан", bg = Color3.fromRGB(5,25,45)},
+            {name = "Лес", bg = Color3.fromRGB(5,35,15)},
+            {name = "Золото", bg = Color3.fromRGB(35,28,5)},
+            {name = "Космос", bg = Color3.fromRGB(8,8,28)},
+            {name = "Розовый", bg = Color3.fromRGB(42,12,28)},
+            {name = "Красный", bg = Color3.fromRGB(48,12,12)},
+            {name = "Лайм", bg = Color3.fromRGB(12,42,12)},
+            {name = "Синий", bg = Color3.fromRGB(10,15,50)},
+            {name = "Оранж", bg = Color3.fromRGB(48,25,5)},
+            {name = "Бирюза", bg = Color3.fromRGB(5,40,38)},
+            {name = "Малина", bg = Color3.fromRGB(42,8,22)},
+            {name = "Слива", bg = Color3.fromRGB(30,10,35)}
         }
         local ti = 1
         
