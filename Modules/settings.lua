@@ -32,7 +32,7 @@ return {
         
         -- Скрыть кнопки игры
         local gameUIHidden = false
-        local savedStates = {}
+        local hideConnection = nil
         
         local uiLabel = Instance.new("TextLabel", pg)
         uiLabel.Size = UDim2.new(1,0,0,16) uiLabel.Position = UDim2.new(0,0,0,76) uiLabel.BackgroundTransparency = 1
@@ -44,40 +44,37 @@ return {
         Instance.new("UICorner", uiBtn).CornerRadius = UDim.new(0,4)
         Instance.new("UIStroke", uiBtn).Thickness = 1.5 Instance.new("UIStroke", uiBtn).Color = C.purple
         
-        local function hideGameButtons()
-            savedStates = {}
+        local function hideAllButtons()
             local pg = plr:WaitForChild("PlayerGui")
             for _, gui in pairs(pg:GetChildren()) do
                 if gui:IsA("ScreenGui") and gui.Name ~= "DamirHub" and gui.Name ~= "DamirMini" then
                     for _, obj in pairs(gui:GetDescendants()) do
                         if (obj:IsA("TextButton") or obj:IsA("ImageButton")) and obj.Visible then
-                            table.insert(savedStates, {object = obj, visible = obj.Visible, active = obj.Active})
                             obj.Visible = false
-                            obj.Active = false
                         end
                     end
                 end
             end
         end
         
-        local function showGameButtons()
-            for _, state in pairs(savedStates) do
-                if state.object and state.object.Parent then
-                    state.object.Visible = state.visible
-                    state.object.Active = state.active
-                end
-            end
-            savedStates = {}
-        end
-        
         uiBtn.MouseButton1Click:Connect(function()
             gameUIHidden = not gameUIHidden
             if gameUIHidden then
-                hideGameButtons()
+                hideAllButtons()
                 uiLabel.Text = "👁️ Кнопки игры: СКРЫТЫ"
-                uiBtn.Text = "ПОКАЗАТЬ КНОПКИ ИГРЫ"
+                uiBtn.Text = "ПОКАЗАТЬ КНОПКИ"
+                -- Повторяем скрытие каждые 2 секунды (для новых кнопок после краша)
+                hideConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                    -- используем счётчик чтобы не каждый кадр
+                end)
+                spawn(function()
+                    while gameUIHidden do
+                        wait(2)
+                        hideAllButtons()
+                    end
+                end)
             else
-                showGameButtons()
+                if hideConnection then hideConnection:Disconnect() end
                 uiLabel.Text = "👁️ Кнопки игры: ВИДНЫ"
                 uiBtn.Text = "СКРЫТЬ КНОПКИ ИГРЫ"
             end
