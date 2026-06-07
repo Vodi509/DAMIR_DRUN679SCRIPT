@@ -159,6 +159,20 @@ return {
         speedUp.TextSize = 9
         Instance.new("UICorner", speedUp).CornerRadius = UDim.new(0,4)
         
+        -- ===== ВИЗУАЛЬНЫЙ ИНДИКАТОР ПОЛЁТА НА ЭКРАНЕ =====
+        local indicator = Instance.new("TextLabel")
+        indicator.Size = UDim2.new(0, 150, 0, 40)
+        indicator.Position = UDim2.new(0.5, -75, 0.1, 0)
+        indicator.BackgroundColor3 = Color3.fromRGB(0,0,0)
+        indicator.BackgroundTransparency = 0.3
+        indicator.Text = "🕊 FLY: OFF"
+        indicator.TextColor3 = Color3.fromRGB(255,100,100)
+        indicator.Font = Enum.Font.GothamBold
+        indicator.TextSize = 18
+        indicator.Visible = true
+        Instance.new("UICorner", indicator).CornerRadius = UDim.new(0, 8)
+        indicator.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+        
         -- ===== ЛОГИКА NOCLIP =====
         local noclipActive = false
         local noclipConnection = nil
@@ -198,7 +212,7 @@ return {
         
         noclipBtn.MouseButton1Click:Connect(toggleNoclip)
         
-        -- ===== FLY ДЛЯ ТЕЛЕФОНА (РАБОТАЕТ ОТ ДЖОЙСТИКА) =====
+        -- ===== ПРОСТОЙ FLY ДЛЯ ТЕЛЕФОНА =====
         local flyActive = false
         local flySpeed = 80
         local bv = nil
@@ -220,6 +234,8 @@ return {
                 local root = char:FindFirstChild("HumanoidRootPart")
                 if root then root.Velocity = Vector3.zero end
             end
+            indicator.Text = "🕊 FLY: OFF"
+            indicator.TextColor3 = Color3.fromRGB(255,100,100)
         end
         
         local function startFly()
@@ -236,6 +252,7 @@ return {
             
             hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
             hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+            hum:ChangeState(Enum.HumanoidStateType.Landed)
             
             bg = Instance.new("BodyGyro", root)
             bg.P = 1e4
@@ -254,24 +271,18 @@ return {
                     stopFly()
                     return
                 end
-                
-                -- Получаем направление джойстика (работает на телефоне)
                 local moveDir = game:GetService("UserInputService"):GetMoveDirection()
                 local cam = workspace.CurrentCamera
-                
-                -- Движение относительно камеры
                 local forward = cam.CFrame.LookVector * moveDir.Z
                 local right = cam.CFrame.RightVector * moveDir.X
                 local moveVector = (forward + right) * flySpeed
-                
-                if bv then
-                    bv.Velocity = moveVector
-                end
-                
+                if bv then bv.Velocity = moveVector end
                 if bg and moveVector.Magnitude > 0.1 then
                     bg.CFrame = CFrame.new(root.Position, root.Position + moveVector.Unit)
                 end
             end)
+            indicator.Text = "🕊 FLY: ON"
+            indicator.TextColor3 = Color3.fromRGB(100,255,100)
         end
         
         local function toggleFly()
@@ -320,7 +331,7 @@ return {
             pValue.Text = tostring(v)
         end)
         
-        -- Пересоздаём полёт при респавне
+        -- Пересоздаём при респавне
         game.Players.LocalPlayer.CharacterAdded:Connect(function()
             if flyActive then
                 task.wait(1)
@@ -328,7 +339,6 @@ return {
             end
         end)
         
-        -- Очистка при телепорте
         game.Players.LocalPlayer.OnTeleport:Connect(function()
             if flyActive then
                 flyActive = false
