@@ -108,23 +108,23 @@ return {
         noclipBtn.TextSize = 11
         Instance.new("UICorner", noclipBtn).CornerRadius = UDim.new(0,5)
         
-        -- ===== FLY =====
-        local flyBtn = Instance.new("TextButton", pg)
-        flyBtn.Size = UDim2.new(0.48,0,0,rowH)
-        flyBtn.Position = UDim2.new(0.51,0,0,yOffset+rowH*2+12)
-        flyBtn.BackgroundColor3 = C.btn
-        flyBtn.Text = "🕊 FLY: ВЫКЛ"
-        flyBtn.TextColor3 = Color3.fromRGB(255,100,100)
-        flyBtn.Font = Enum.Font.GothamBold
-        flyBtn.TextSize = 11
-        Instance.new("UICorner", flyBtn).CornerRadius = UDim.new(0,5)
+        -- ===== КНОПКА СКОРОСТИ (НА МЕСТЕ FLY) =====
+        local speedBtn = Instance.new("TextButton", pg)
+        speedBtn.Size = UDim2.new(0.48,0,0,rowH)
+        speedBtn.Position = UDim2.new(0.51,0,0,yOffset+rowH*2+12)
+        speedBtn.BackgroundColor3 = C.btn
+        speedBtn.Text = "⚡ СКОРОСТЬ: ВЫКЛ"
+        speedBtn.TextColor3 = Color3.fromRGB(255,100,100)
+        speedBtn.Font = Enum.Font.GothamBold
+        speedBtn.TextSize = 11
+        Instance.new("UICorner", speedBtn).CornerRadius = UDim.new(0,5)
         
         -- Регулятор скорости
         local speedLabel = Instance.new("TextLabel", pg)
         speedLabel.Size = UDim2.new(0.48,0,0,20)
         speedLabel.Position = UDim2.new(0.51,0,0,yOffset+rowH*3+8)
         speedLabel.BackgroundTransparency = 1
-        speedLabel.Text = "Скорость:"
+        speedLabel.Text = "Значение:"
         speedLabel.TextColor3 = C.white
         speedLabel.Font = Enum.Font.Gotham
         speedLabel.TextSize = 10
@@ -133,7 +133,7 @@ return {
         speedValue.Size = UDim2.new(0.15,0,0,20)
         speedValue.Position = UDim2.new(0.51,0,0,yOffset+rowH*3+28)
         speedValue.BackgroundColor3 = C.side
-        speedValue.Text = "80"
+        speedValue.Text = "16"
         speedValue.TextColor3 = C.white
         speedValue.Font = Enum.Font.GothamBold
         speedValue.TextSize = 10
@@ -143,7 +143,7 @@ return {
         speedDown.Size = UDim2.new(0.1,0,0,20)
         speedDown.Position = UDim2.new(0.68,0,0,yOffset+rowH*3+28)
         speedDown.BackgroundColor3 = C.btn
-        speedDown.Text = "-10"
+        speedDown.Text = "-5"
         speedDown.TextColor3 = C.white
         speedDown.Font = Enum.Font.GothamBold
         speedDown.TextSize = 9
@@ -153,25 +153,11 @@ return {
         speedUp.Size = UDim2.new(0.1,0,0,20)
         speedUp.Position = UDim2.new(0.8,0,0,yOffset+rowH*3+28)
         speedUp.BackgroundColor3 = C.btn
-        speedUp.Text = "+10"
+        speedUp.Text = "+5"
         speedUp.TextColor3 = C.white
         speedUp.Font = Enum.Font.GothamBold
         speedUp.TextSize = 9
         Instance.new("UICorner", speedUp).CornerRadius = UDim.new(0,4)
-        
-        -- ===== ВИЗУАЛЬНЫЙ ИНДИКАТОР ПОЛЁТА НА ЭКРАНЕ =====
-        local indicator = Instance.new("TextLabel")
-        indicator.Size = UDim2.new(0, 150, 0, 40)
-        indicator.Position = UDim2.new(0.5, -75, 0.1, 0)
-        indicator.BackgroundColor3 = Color3.fromRGB(0,0,0)
-        indicator.BackgroundTransparency = 0.3
-        indicator.Text = "🕊 FLY: OFF"
-        indicator.TextColor3 = Color3.fromRGB(255,100,100)
-        indicator.Font = Enum.Font.GothamBold
-        indicator.TextSize = 18
-        indicator.Visible = true
-        Instance.new("UICorner", indicator).CornerRadius = UDim.new(0, 8)
-        indicator.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
         
         -- ===== ЛОГИКА NOCLIP =====
         local noclipActive = false
@@ -212,101 +198,72 @@ return {
         
         noclipBtn.MouseButton1Click:Connect(toggleNoclip)
         
-        -- ===== ПРОСТОЙ FLY ДЛЯ ТЕЛЕФОНА =====
-        local flyActive = false
-        local flySpeed = 80
-        local bv = nil
-        local bg = nil
-        local flyConn = nil
+        -- ===== ЛОГИКА СКОРОСТИ =====
+        local currentSpeed = 16
+        local speedEnabled = false
+        local speedConn = nil
         
-        local function stopFly()
-            local player = game.Players.LocalPlayer
-            local char = player and player.Character
-            if bv then bv:Destroy() bv = nil end
-            if bg then bg:Destroy() bg = nil end
-            if flyConn then flyConn:Disconnect() flyConn = nil end
+        local function applySpeed()
+            local char = game.Players.LocalPlayer.Character
             if char then
                 local hum = char:FindFirstChildOfClass("Humanoid")
                 if hum then
-                    hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
-                    hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
+                    hum.WalkSpeed = currentSpeed
                 end
-                local root = char:FindFirstChild("HumanoidRootPart")
-                if root then root.Velocity = Vector3.zero end
             end
-            indicator.Text = "🕊 FLY: OFF"
-            indicator.TextColor3 = Color3.fromRGB(255,100,100)
         end
         
-        local function startFly()
-            local player = game.Players.LocalPlayer
-            local char = player.Character
-            if not char then
-                task.wait(0.5)
-                char = player.Character
-                if not char then return end
-            end
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            local root = char:FindFirstChild("HumanoidRootPart")
-            if not hum or not root then return end
-            
-            hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
-            hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
-            hum:ChangeState(Enum.HumanoidStateType.Landed)
-            
-            bg = Instance.new("BodyGyro", root)
-            bg.P = 1e4
-            bg.MaxTorque = Vector3.new(1e5, 1e5, 1e5)
-            bg.CFrame = root.CFrame
-            
-            bv = Instance.new("BodyVelocity", root)
-            bv.P = 1e4
-            bv.MaxForce = Vector3.new(1e6, 1e6, 1e6)
-            bv.Velocity = Vector3.zero
-            
-            flyConn = game:GetService("RunService").RenderStepped:Connect(function()
-                if not flyActive then return end
-                local c = player.Character
-                if not c or not c.PrimaryPart then
-                    stopFly()
-                    return
+        local function toggleSpeed()
+            speedEnabled = not speedEnabled
+            if speedEnabled then
+                applySpeed()
+                if not speedConn then
+                    speedConn = game:GetService("RunService").RenderStepped:Connect(function()
+                        if speedEnabled then
+                            applySpeed()
+                        end
+                    end)
                 end
-                local moveDir = game:GetService("UserInputService"):GetMoveDirection()
-                local cam = workspace.CurrentCamera
-                local forward = cam.CFrame.LookVector * moveDir.Z
-                local right = cam.CFrame.RightVector * moveDir.X
-                local moveVector = (forward + right) * flySpeed
-                if bv then bv.Velocity = moveVector end
-                if bg and moveVector.Magnitude > 0.1 then
-                    bg.CFrame = CFrame.new(root.Position, root.Position + moveVector.Unit)
-                end
-            end)
-            indicator.Text = "🕊 FLY: ON"
-            indicator.TextColor3 = Color3.fromRGB(100,255,100)
-        end
-        
-        local function toggleFly()
-            flyActive = not flyActive
-            if flyActive then
-                flyBtn.Text = "🕊 FLY: ВКЛ"
-                flyBtn.TextColor3 = Color3.fromRGB(100,255,100)
-                startFly()
+                speedBtn.Text = "⚡ СКОРОСТЬ: ВКЛ"
+                speedBtn.TextColor3 = Color3.fromRGB(100,255,100)
             else
-                flyBtn.Text = "🕊 FLY: ВЫКЛ"
-                flyBtn.TextColor3 = Color3.fromRGB(255,100,100)
-                stopFly()
+                if speedConn then
+                    speedConn:Disconnect()
+                    speedConn = nil
+                end
+                local char = game.Players.LocalPlayer.Character
+                if char then
+                    local hum = char:FindFirstChildOfClass("Humanoid")
+                    if hum then
+                        hum.WalkSpeed = 16
+                    end
+                end
+                speedBtn.Text = "⚡ СКОРОСТЬ: ВЫКЛ"
+                speedBtn.TextColor3 = Color3.fromRGB(255,100,100)
             end
         end
         
-        flyBtn.MouseButton1Click:Connect(toggleFly)
+        speedBtn.MouseButton1Click:Connect(toggleSpeed)
         
+        -- Изменение значения скорости
         speedDown.MouseButton1Click:Connect(function()
-            flySpeed = math.max(20, flySpeed - 10)
-            speedValue.Text = tostring(flySpeed)
+            currentSpeed = math.max(16, currentSpeed - 5)
+            speedValue.Text = tostring(currentSpeed)
+            if speedEnabled then applySpeed() end
         end)
+        
         speedUp.MouseButton1Click:Connect(function()
-            flySpeed = math.min(300, flySpeed + 10)
-            speedValue.Text = tostring(flySpeed)
+            currentSpeed = math.min(150, currentSpeed + 5)
+            speedValue.Text = tostring(currentSpeed)
+            if speedEnabled then applySpeed() end
+        end)
+        
+        -- При респавне персонажа
+        game.Players.LocalPlayer.CharacterAdded:Connect(function()
+            if speedEnabled then
+                task.wait(0.5)
+                applySpeed()
+            end
         end)
         
         -- ОБРАБОТЧИКИ МОЛОТА
@@ -329,21 +286,6 @@ return {
             local v = math.min(3000, (GUI.hammerSpeed or 1500) + 50)
             GUI.hammerSpeed = v
             pValue.Text = tostring(v)
-        end)
-        
-        -- Пересоздаём при респавне
-        game.Players.LocalPlayer.CharacterAdded:Connect(function()
-            if flyActive then
-                task.wait(1)
-                startFly()
-            end
-        end)
-        
-        game.Players.LocalPlayer.OnTeleport:Connect(function()
-            if flyActive then
-                flyActive = false
-                stopFly()
-            end
         end)
     end
 }
