@@ -1,4 +1,4 @@
--- [[ DAMIR HUB v8.1 FINAL - SIMPLE ]] --
+-- [[ DAMIR HUB v8.4 FINAL - SIMPLE ]] --
 local B = "https://raw.githubusercontent.com/Vodi509/DAMIR_DRUN679SCRIPT/refs/heads/main/Modules"
 
 local function loadMod(name)
@@ -59,7 +59,7 @@ Instance.new("UICorner", hdr).CornerRadius = UDim.new(0,8)
 
 local ht = Instance.new("TextLabel", hdr)
 ht.Size = UDim2.new(1,-60,1,0) ht.Position = UDim2.new(0,12,0,0) ht.BackgroundTransparency = 1
-ht.Text = "DAMIR HUB v8.1" ht.TextColor3 = C.white ht.Font = Enum.Font.GothamBold ht.TextSize = 13 ht.TextXAlignment = Enum.TextXAlignment.Left
+ht.Text = "DAMIR HUB v8.4" ht.TextColor3 = C.white ht.Font = Enum.Font.GothamBold ht.TextSize = 13 ht.TextXAlignment = Enum.TextXAlignment.Left
 
 local minB = Instance.new("TextButton", hdr)
 minB.Size = UDim2.new(0,22,0,22) minB.Position = UDim2.new(1,-50,0,4)
