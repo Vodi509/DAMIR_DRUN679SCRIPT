@@ -3,7 +3,7 @@ return {
         local C = GUI.colors
         local pg = GUI.settings
         
-        -- Очищаем панель настроек на всякий случай
+        -- Очищаем панель настроек
         for _, v in pairs(pg:GetChildren()) do v:Destroy() end
         
         local title = Instance.new("TextLabel", pg)
@@ -100,52 +100,10 @@ return {
         pUp.TextSize = 11
         Instance.new("UICorner", pUp).CornerRadius = UDim.new(0,4)
         
-        -- ЦВЕТ ТЕМЫ
-        local cLabel = Instance.new("TextLabel", pg)
-        cLabel.Size = UDim2.new(0.4,0,0,rowH)
-        cLabel.Position = UDim2.new(0,0,0,yOffset+rowH*2+8)
-        cLabel.BackgroundTransparency = 1
-        cLabel.Text = "🎨 Цвет темы:"
-        cLabel.TextColor3 = C.white
-        cLabel.Font = Enum.Font.Gotham
-        cLabel.TextSize = 11
-        cLabel.TextXAlignment = Enum.TextXAlignment.Left
-        
-        local colorBtn = Instance.new("TextButton", pg)
-        colorBtn.Size = UDim2.new(0.4,0,0,rowH)
-        colorBtn.Position = UDim2.new(0.42,0,0,yOffset+rowH*2+8)
-        colorBtn.BackgroundColor3 = C.btn
-        colorBtn.Text = "СМЕНИТЬ"
-        colorBtn.TextColor3 = C.white
-        colorBtn.Font = Enum.Font.GothamBold
-        colorBtn.TextSize = 11
-        Instance.new("UICorner", colorBtn).CornerRadius = UDim.new(0,4)
-        
-        local colors = {
-            Color3.fromRGB(30,30,40), Color3.fromRGB(40,30,50), Color3.fromRGB(30,40,35),
-            Color3.fromRGB(50,30,30), Color3.fromRGB(35,35,35), Color3.fromRGB(25,35,45),
-            Color3.fromRGB(45,35,25), Color3.fromRGB(55,25,35), Color3.fromRGB(35,45,35),
-            Color3.fromRGB(25,25,55), Color3.fromRGB(55,40,20), Color3.fromRGB(20,50,40),
-            Color3.fromRGB(50,20,50), Color3.fromRGB(40,40,20), Color3.fromRGB(60,30,30)
-        }
-        local ci = 1
-        
-        colorBtn.MouseButton1Click:Connect(function()
-            ci = ci % #colors + 1
-            local nc = colors[ci]
-            GUI.colors.side = nc
-            GUI.colors.btn = Color3.fromRGB(nc.R*0.8, nc.G*0.8, nc.B*0.8)
-            for _, f in pairs(pg.Parent.Parent:GetDescendants()) do
-                if f:IsA("Frame") and f.BackgroundColor3 == C.side then f.BackgroundColor3 = nc
-                elseif f:IsA("TextButton") and f.BackgroundColor3 == C.btn then f.BackgroundColor3 = GUI.colors.btn end
-            end
-            colorBtn.BackgroundColor3 = GUI.colors.btn
-        end)
-        
         -- ===== NOCLIP =====
         local noclipBtn = Instance.new("TextButton", pg)
         noclipBtn.Size = UDim2.new(0.8,0,0,rowH)
-        noclipBtn.Position = UDim2.new(0.1,0,0,yOffset+rowH*3+16)
+        noclipBtn.Position = UDim2.new(0.1,0,0,yOffset+rowH*2+16)
         noclipBtn.BackgroundColor3 = C.btn
         noclipBtn.Text = "🚪 NOCLIP: ВЫКЛ"
         noclipBtn.TextColor3 = Color3.fromRGB(255,100,100)
@@ -194,7 +152,7 @@ return {
         -- ===== FLY =====
         local flyBtn = Instance.new("TextButton", pg)
         flyBtn.Size = UDim2.new(0.8,0,0,rowH)
-        flyBtn.Position = UDim2.new(0.1,0,0,yOffset+rowH*4+24)
+        flyBtn.Position = UDim2.new(0.1,0,0,yOffset+rowH*3+24)
         flyBtn.BackgroundColor3 = C.btn
         flyBtn.Text = "🕊 FLY: ВЫКЛ"
         flyBtn.TextColor3 = Color3.fromRGB(255,100,100)
@@ -277,7 +235,7 @@ return {
         -- Скорость FLY
         local speedLabel = Instance.new("TextLabel", pg)
         speedLabel.Size = UDim2.new(0.3,0,0,rowH-6)
-        speedLabel.Position = UDim2.new(0.1,0,0,yOffset+rowH*5+32)
+        speedLabel.Position = UDim2.new(0.1,0,0,yOffset+rowH*4+32)
         speedLabel.BackgroundTransparency = 1
         speedLabel.Text = "Скорость FLY:"
         speedLabel.TextColor3 = C.white
@@ -286,7 +244,7 @@ return {
         
         local speedValue = Instance.new("TextLabel", pg)
         speedValue.Size = UDim2.new(0.15,0,0,rowH-6)
-        speedValue.Position = UDim2.new(0.4,0,0,yOffset+rowH*5+32)
+        speedValue.Position = UDim2.new(0.4,0,0,yOffset+rowH*4+32)
         speedValue.BackgroundColor3 = C.side
         speedValue.Text = "1"
         speedValue.TextColor3 = C.white
@@ -296,7 +254,7 @@ return {
         
         local speedDown = Instance.new("TextButton", pg)
         speedDown.Size = UDim2.new(0.12,0,0,rowH-6)
-        speedDown.Position = UDim2.new(0.56,0,0,yOffset+rowH*5+32)
+        speedDown.Position = UDim2.new(0.56,0,0,yOffset+rowH*4+32)
         speedDown.BackgroundColor3 = C.btn
         speedDown.Text = "-5"
         speedDown.TextColor3 = C.white
@@ -306,7 +264,7 @@ return {
         
         local speedUp = Instance.new("TextButton", pg)
         speedUp.Size = UDim2.new(0.12,0,0,rowH-6)
-        speedUp.Position = UDim2.new(0.7,0,0,yOffset+rowH*5+32)
+        speedUp.Position = UDim2.new(0.7,0,0,yOffset+rowH*4+32)
         speedUp.BackgroundColor3 = C.btn
         speedUp.Text = "+5"
         speedUp.TextColor3 = C.white
@@ -326,7 +284,7 @@ return {
         -- ===== FLING =====
         local flingBtn = Instance.new("TextButton", pg)
         flingBtn.Size = UDim2.new(0.8,0,0,rowH)
-        flingBtn.Position = UDim2.new(0.1,0,0,yOffset+rowH*6+44)
+        flingBtn.Position = UDim2.new(0.1,0,0,yOffset+rowH*5+44)
         flingBtn.BackgroundColor3 = C.btn
         flingBtn.Text = "💫 FLING: ВЫКЛ"
         flingBtn.TextColor3 = Color3.fromRGB(255,100,100)
@@ -391,7 +349,7 @@ return {
         -- Сила FLING
         local flingLabel = Instance.new("TextLabel", pg)
         flingLabel.Size = UDim2.new(0.3,0,0,rowH-6)
-        flingLabel.Position = UDim2.new(0.1,0,0,yOffset+rowH*7+52)
+        flingLabel.Position = UDim2.new(0.1,0,0,yOffset+rowH*6+52)
         flingLabel.BackgroundTransparency = 1
         flingLabel.Text = "Сила FLING:"
         flingLabel.TextColor3 = C.white
@@ -400,7 +358,7 @@ return {
         
         local flingValue = Instance.new("TextLabel", pg)
         flingValue.Size = UDim2.new(0.15,0,0,rowH-6)
-        flingValue.Position = UDim2.new(0.4,0,0,yOffset+rowH*7+52)
+        flingValue.Position = UDim2.new(0.4,0,0,yOffset+rowH*6+52)
         flingValue.BackgroundColor3 = C.side
         flingValue.Text = "5000"
         flingValue.TextColor3 = C.white
@@ -410,7 +368,7 @@ return {
         
         local flingDown = Instance.new("TextButton", pg)
         flingDown.Size = UDim2.new(0.12,0,0,rowH-6)
-        flingDown.Position = UDim2.new(0.56,0,0,yOffset+rowH*7+52)
+        flingDown.Position = UDim2.new(0.56,0,0,yOffset+rowH*6+52)
         flingDown.BackgroundColor3 = C.btn
         flingDown.Text = "-500"
         flingDown.TextColor3 = C.white
@@ -420,7 +378,7 @@ return {
         
         local flingUp = Instance.new("TextButton", pg)
         flingUp.Size = UDim2.new(0.12,0,0,rowH-6)
-        flingUp.Position = UDim2.new(0.7,0,0,yOffset+rowH*7+52)
+        flingUp.Position = UDim2.new(0.7,0,0,yOffset+rowH*6+52)
         flingUp.BackgroundColor3 = C.btn
         flingUp.Text = "+500"
         flingUp.TextColor3 = C.white
